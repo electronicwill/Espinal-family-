@@ -3,7 +3,7 @@ import pathlib
 here=pathlib.Path(__file__).parent
 app=(here/"app.html").read_text()
 for a,b in [('<span><b>Test mode</b> · no passwords</span>','<span><b>Espinal Family</b></span>'),
-            ("I'm not allowed to think right now. Allow this app to use Claude to talk with me.","I need my brain connected first. Ask Dad or Mom to add the Claude key in Family → Coco's brain."),
+            ("I'm not allowed to think right now. Allow this app to use Claude to talk with me.","I need my brain connected first. Ask Dad or Mom to add the brain key in Family → Coco's brain."),
             ('Reset all test data','Reset all data'),('Clears everyone, every message, task and check-in so you can test setup from the start.','Erases everyone, every message, task and check-in on this tablet. This can\'t be undone.'),
             ('Test data</div>','Danger zone</div>')]:
     assert a in app,a; app=app.replace(a,b)

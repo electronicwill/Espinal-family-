@@ -50,12 +50,13 @@
   function colRef(path) { return Object.assign(query(path, [], null, null), { path, doc: id => docRef(path + "/" + (id || newId())), add: async d => { const r = docRef(path + "/" + newId()); await r.set(d); return r; } }); }
   const db = { collection: n => colRef(n), doc: p => docRef(p) };
 
-  /* ---------- Coco's brain: Claude, with the key saved on this device ---------- */
+  /* ---------- Coco's brain: a free Google Gemini key (AIza…) or a Claude key (sk-ant-…), saved only on this device ---------- */
   const MODELS = { quick: "claude-haiku-5-5", default: "claude-sonnet-5-5", complex: "claude-opus-5-5" };
+  const GEMINI_MODELS = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.0-flash"];
   const getKey = () => { try { return localStorage.getItem(KEY_STORE) || ""; } catch (e) { return ""; } };
-  async function callClaude(messages, tools, tier, signal) {
-    const key = getKey();
-    if (!key) throw { code: "not_granted", message: "No Claude key on this device" };
+  const isGemini = k => /^AIza/.test(k);
+  const net = e => { if (e && e.name === "AbortError") return { code: "cancelled", message: "cancelled" }; return { code: "upstream_error", message: "No internet connection" }; };
+  async function callAnthropic(key, messages, tools, tier, signal) {
     const body = { model: MODELS[tier] || MODELS.default, max_tokens: 1500, messages };
     if (tools && tools.length) body.tools = tools;
     let r;
@@ -63,11 +64,55 @@
       r = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", signal,
         headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json", "anthropic-dangerous-direct-browser-access": "true" },
         body: JSON.stringify(body) });
-    } catch (e) { if (e && e.name === "AbortError") throw { code: "cancelled", message: "cancelled" }; throw { code: "upstream_error", message: "No internet connection" }; }
-    if (r.status === 401 || r.status === 403) throw { code: "not_granted", message: "The Claude key isn't valid" };
+    } catch (e) { throw net(e); }
+    if (r.status === 401 || r.status === 403) throw { code: "not_granted", message: "The key isn't valid" };
     if (r.status === 429) throw { code: "rate_limited", message: "Too many requests" };
     if (!r.ok) throw { code: "upstream_error", message: "Claude error " + r.status };
     return r.json();
+  }
+  /* Gemini speaks a different format; convert both ways so the app doesn't notice */
+  const gSchema = s => { if (!s || typeof s !== "object") return s; const o = {};
+    if (s.type) o.type = String(s.type).toUpperCase(); if (s.description) o.description = s.description; if (s.enum) o.enum = s.enum.map(String);
+    if (s.properties) { o.properties = {}; for (const k in s.properties) o.properties[k] = gSchema(s.properties[k]); }
+    if (s.items) o.items = gSchema(s.items); if (s.required && s.required.length) o.required = s.required; return o; };
+  let gModel = 0;
+  async function callGemini(key, messages, tools, signal) {
+    const names = {}; const contents = messages.map(m => {
+      const role = m.role === "assistant" ? "model" : "user";
+      if (typeof m.content === "string") return { role, parts: [{ text: m.content }] };
+      return { role, parts: m.content.map(b => {
+        if (b.type === "text") return { text: b.text };
+        if (b.type === "tool_use") { names[b.id] = b.name; return b.thought_signature ? { functionCall: { name: b.name, args: b.input || {} }, thoughtSignature: b.thought_signature } : { functionCall: { name: b.name, args: b.input || {} } }; }
+        if (b.type === "tool_result") return { functionResponse: { name: names[b.tool_use_id] || "tool", response: { result: b.content } } };
+        return { text: "" };
+      }) };
+    });
+    const body = { contents, generationConfig: { maxOutputTokens: 1500 } };
+    if (tools && tools.length) body.tools = [{ functionDeclarations: tools.map(t => ({ name: t.name, description: t.description, parameters: gSchema(t.input_schema) })) }];
+    for (;;) {
+      let r;
+      try {
+        r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODELS[gModel] + ":generateContent", { method: "POST", signal,
+          headers: { "content-type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body) });
+      } catch (e) { throw net(e); }
+      if (r.status === 404 && gModel < GEMINI_MODELS.length - 1) { gModel++; continue; }
+      if (r.status === 400 || r.status === 401 || r.status === 403) { let m = ""; try { m = (await r.json()).error.message; } catch (e) {} if (/api key/i.test(m) || r.status !== 400) throw { code: "not_granted", message: "The key isn't valid" }; throw { code: "upstream_error", message: "Gemini: " + m }; }
+      if (r.status === 429) throw { code: "rate_limited", message: "Free limit reached for now, try again in a minute" };
+      if (!r.ok) throw { code: "upstream_error", message: "Gemini error " + r.status };
+      const j = await r.json(), c = (j.candidates || [])[0] || {}, parts = (c.content && c.content.parts) || [];
+      const content = []; let n = 0;
+      parts.forEach(p => {
+        if (p.text && !p.thought) content.push({ type: "text", text: p.text });
+        if (p.functionCall) content.push({ type: "tool_use", id: "g" + Date.now() + (n++), name: p.functionCall.name, input: p.functionCall.args || {}, thought_signature: p.thoughtSignature });
+      });
+      const stop = content.some(b => b.type === "tool_use") ? "tool_use" : c.finishReason === "MAX_TOKENS" ? "max_tokens" : "end_turn";
+      return { content, stop_reason: stop };
+    }
+  }
+  async function callClaude(messages, tools, tier, signal) {
+    const key = getKey();
+    if (!key) throw { code: "not_granted", message: "No brain key on this device" };
+    return isGemini(key) ? callGemini(key, messages, tools, signal) : callAnthropic(key, messages, tools, tier, signal);
   }
   const toMessages = input => {
     const list = typeof input === "string" ? [{ role: "user", content: input }] : input.map(m => ({ role: m.role, content: String(m.content) }));
@@ -119,12 +164,12 @@
     const famTab = document.querySelector('[data-tab="family"]'); if (!famTab || document.getElementById("cocoBrain")) return;
     const box = document.createElement("div"); box.id = "cocoBrain";
     box.innerHTML = `<div class="section-h">Coco's brain</div>
-      <div class="list plain"><div class="cell"><input class="field" id="cbKey" type="password" placeholder="Paste the Claude API key (sk-ant-…)" aria-label="Claude API key" autocomplete="off"></div></div>
+      <div class="list plain"><div class="cell"><input class="field" id="cbKey" type="password" placeholder="Paste the free Gemini key (AIza…) or a Claude key" aria-label="Coco's brain key" autocomplete="off"></div></div>
       <p class="section-f" id="cbNote"></p>
       <div style="display:flex;gap:8px;margin-top:10px"><button class="btn sm" id="cbSave">Save key</button><button class="btn sm gray" id="cbRemove">Remove</button></div>`;
     const anchor = famTab.querySelector("#codeBox") || famTab.firstElementChild.nextSibling;
     famTab.insertBefore(box, anchor);
-    const note = () => { box.querySelector("#cbNote").textContent = getKey() ? "✅ Coco can think and the kindness check is on. The key stays only on this tablet." : "Without a key, Coco can only lead journeys and breathing. Get a key at console.anthropic.com → API Keys (set a monthly limit under Billing)."; };
+    const note = () => { box.querySelector("#cbNote").textContent = getKey() ? "✅ Coco can think and the kindness check is on (" + (isGemini(getKey()) ? "free Google Gemini" : "Claude") + "). The key stays only on this tablet." : "Without a key, Coco can only lead journeys and breathing. Free key: open aistudio.google.com/apikey, sign in with Google, tap Create API key, copy it and paste it here."; };
     note();
     box.querySelector("#cbSave").onclick = async () => {
       const k = box.querySelector("#cbKey").value.trim(); if (!k) return;

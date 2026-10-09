@@ -2022,7 +2022,7 @@ async function novaSend(text,o){const talk=!!(o&&o.talk);
     novaTurns.push({role:"assistant",content:clean.trim()});if(talk)talkReply(clean.trim());else novaSpeak(clean.trim());
   }catch(e){
     if(e.code==="cancelled"){out.textContent=e.text||"(stopped)"}
-    else if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(e.code))out.textContent="I need my brain connected first. Ask Dad or Mom to add the Claude key in Family → Coco's brain.";
+    else if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(e.code))out.textContent="I need my brain connected first. Ask Dad or Mom to add the brain key in Family → Coco's brain.";
     else if(e.code==="rate_limited")out.textContent="I need a short rest. Try me again in a minute.";
     else out.textContent=(e.text?e.text+"\n\n":"")+"Something interrupted me. Try asking again.";
     novaTurns.pop();if(talk&&e.code!=="cancelled")talkReply(out.textContent);
