@@ -485,7 +485,7 @@ input.field,textarea.field,.inrow textarea{background:rgba(8,12,34,.75);border:1
 .hqty b{min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
 .tabbar button{min-width:0}
 body:has(#sheetRoot .sheet) .nova-fab{display:none}
-.hsnap{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px 16px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,rgba(62,240,255,.16),rgba(165,139,255,.18));box-shadow:inset 0 0 0 1px rgba(62,240,255,.35)}
+.hsnap{width:100%;text-align:left;display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px 16px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,rgba(62,240,255,.16),rgba(165,139,255,.18));box-shadow:inset 0 0 0 1px rgba(62,240,255,.35)}
 .hsnap .ic{font-size:30px}.hsnap b{display:block;font-size:17px}.hsnap .grow span{font-size:14px;color:var(--label-2)}
 .hsnapimg{display:block;width:100%;max-height:260px;object-fit:cover;border-radius:16px;margin-top:4px}
 .hsnaprow{align-items:flex-start}.hsnaprow.off{opacity:.45}
@@ -2511,8 +2511,10 @@ function openAddFood(id){const h=health[id]||{},gf=(h.cond||[]).includes("gluten
   const hr=new Date().getHours();let meal=hr<10?"b":hr<15?"l":hr<21?"d":"s",qty=1;
   openSheet("Add food",body=>{
     const seg=el("div","seg");MEALT.forEach(m=>{const b=el("button","",m.n);b.setAttribute("aria-pressed",m.v===meal);b.onclick=()=>{meal=m.v;seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))};seg.append(b)});body.append(seg);
-    const snap=el("label","hsnap");snap.hidden=true;const cam=el("input");cam.type="file";cam.accept="image/*";cam.setAttribute("capture","environment");cam.hidden=true;
-    snap.append(el("span","ic","📷"),el("span","grow"),cam);snap.querySelector(".grow").append(el("b","","Snap a meal"),el("span","",GN()+" spots the food and counts it for you"));body.append(snap);
+    const snap=el("button","hsnap");snap.type="button";snap.hidden=true;const cam=el("input");cam.type="file";cam.accept="image/*";cam.style.cssText="position:fixed;left:-9999px;width:1px;height:1px;opacity:0";
+    snap.append(el("span","ic","📷"),el("span","grow"));snap.querySelector(".grow").append(el("b","","Snap a meal"),el("span","",GN()+" spots the food and counts it for you"));body.append(snap,cam);
+    const camHelp=el("p","section-f","");camHelp.hidden=true;body.append(camHelp);
+    snap.onclick=()=>{camHelp.hidden=false;camHelp.textContent="Pick “Camera” to take a photo, or choose one from your gallery. If nothing opens, open this app in Chrome on your phone (⋮ → Open in Chrome) and try again.";try{cam.click()}catch(e){}};
     (async()=>{const caps=sample&&aiOn&&sample.limits?await sample.limits().catch(()=>null):null;if(caps?.images){snap.hidden=false;if(caps.images.mediaTypes)cam.accept=caps.images.mediaTypes.join(",")}})();
     cam.onchange=()=>{const f=cam.files&&cam.files[0];cam.value="";if(f)snapMeal(id,meal,f)};
     const q=el("input","field");q.placeholder="Or search: rice, eggs, pollo, mangú…";q.setAttribute("aria-label","Search foods");q.style.marginTop="12px";q.autocomplete="off";body.append(q);
@@ -2579,7 +2581,7 @@ grain_servings: 1 = 1 slice bread or ½ cup cooked rice. gluten_maybe = could hi
           closeSheet();chime([784,988,1175]);toast("📷 Added "+on.length+" item"+(on.length===1?"":"s"));if(gf&&on.some(r=>r.f.fl.includes("gl")))setTimeout(()=>toast("⚠ Heads up: that meal may have gluten"),2700)}
         catch(e){add.disabled=false;toast("Couldn't add it. Try again.")}};
       out.append(l,total,add);sum();
-      const again=el("label","btn gray","📷 Take another photo");again.style.marginTop="8px";const c2=el("input");c2.type="file";c2.accept="image/*";c2.setAttribute("capture","environment");c2.hidden=true;again.append(c2);
+      const again=el("button","btn gray","📷 Take another photo");again.type="button";again.style.marginTop="8px";const c2=el("input");c2.type="file";c2.accept="image/*";c2.style.cssText="position:fixed;left:-9999px;width:1px;height:1px;opacity:0";out.append(c2);again.onclick=()=>c2.click();
       c2.onchange=()=>{const f=c2.files&&c2.files[0];if(f)snapMeal(id,meal,f)};out.append(again);
       out.append(el("p","section-f","Photo estimates can be off by 20% or more. Fix portions that look wrong. The photo isn't saved."));
     }).catch(e=>{st.textContent=e?.code==="not_granted"?"🔒 "+GN()+" needs permission to look at photos. Allow it when asked, or type the food instead.":e?.code==="cancelled"?"Stopped.":"😕 I couldn't read that photo. Try again in good light, or search for the food instead.";
