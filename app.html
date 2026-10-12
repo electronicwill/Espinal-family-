@@ -442,6 +442,50 @@ input.field,textarea.field,.inrow textarea{background:rgba(8,12,34,.75);border:1
 .tneural{position:relative;margin:6px auto 0;display:block;background:rgba(62,240,255,.1);border:1px solid rgba(62,240,255,.4);color:#8ff0ff;border-radius:999px;padding:7px 14px;font-size:13px;font-family:var(--mono);letter-spacing:.04em;max-width:calc(100% - 32px)}
 .tneural:disabled{opacity:.85}
 .thint{position:relative;text-align:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:rgba(210,225,255,.7);padding:0 24px}
+
+/* health */
+.hpeople{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 14px;padding:2px 16px}
+.hperson{flex:none;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:999px;padding:5px 14px 5px 5px;font-size:15px;font-weight:500}
+.hperson[aria-pressed="true"]{background:var(--tint-soft);box-shadow:inset 0 0 0 1.5px var(--tint);color:var(--tint)}
+.htiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.htile{background:var(--card);border-radius:16px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:2px;min-width:0}
+.htile .k{font-size:11px;color:var(--label-2);letter-spacing:.06em;font-weight:600}
+.htile b{font-family:var(--display);font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.htile .s{font-size:12px;color:var(--label-2);line-height:1.25}
+.htile .s.green{color:var(--green)}.htile .s.orange{color:var(--orange)}
+.hdaynav{display:flex;gap:6px}
+.hdaynav button{width:32px;height:32px;border-radius:50%;background:var(--fill);color:var(--tint);font-size:20px;line-height:1}
+.hdaynav button:disabled{opacity:.3}
+.hfood{background:var(--card);border-radius:20px;padding:16px;display:flex;gap:16px;align-items:center}
+.hfood .ring{flex:none}
+.hbars{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.hbar .top{display:flex;justify-content:space-between;font-size:13px;gap:6px}
+.hbar .top .n{color:var(--label-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hbar .tr{height:6px;border-radius:3px;background:var(--fill);margin-top:3px;overflow:hidden}
+.hbar .tr i{display:block;height:100%;border-radius:3px;transition:width .5s}
+.hwarn{font-size:12px;font-weight:600;color:var(--red);background:color-mix(in srgb,var(--red) 14%,transparent);border-radius:999px;padding:3px 8px;white-space:nowrap}
+.hwarn.soft{color:var(--orange);background:color-mix(in srgb,var(--orange) 14%,transparent)}
+.hweek{display:flex;gap:6px;background:var(--card);border-radius:16px;padding:12px}
+.hday{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--label-2)}
+.hday .bar{width:100%;max-width:26px;height:64px;border-radius:6px;background:var(--fill);display:flex;align-items:flex-end;overflow:hidden}
+.hday .bar i{display:block;width:100%;background:linear-gradient(0deg,var(--tint),var(--indigo));border-radius:6px}
+.hday[aria-pressed="true"]{color:var(--tint);font-weight:700}
+.hic{font-size:22px;width:28px;text-align:center}
+.hcond{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border-radius:14px;padding:13px 16px;margin-bottom:8px;text-align:left;font-weight:600}
+.hcond .e{font-size:22px}
+.htip{background:var(--card-2);border-radius:14px;padding:13px 16px;font-size:15px;line-height:1.4}
+.hrow{display:flex;gap:10px}
+.hsel{appearance:none;-webkit-appearance:none;background:var(--card);border-radius:10px;padding:12px 14px;flex:1;min-width:0}
+.hsel option{background:#0b0f26}
+.hchips{display:flex;flex-wrap:wrap;gap:8px}
+.hchip{background:var(--card);border-radius:999px;padding:8px 13px;font-size:14px;font-weight:500}
+.hchip[aria-pressed="true"]{background:var(--tint-soft);color:var(--tint);box-shadow:inset 0 0 0 1.5px var(--tint)}
+.hck{color:var(--tint);font-weight:700;width:18px}
+.hqty{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px}
+.hqty b{min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
+.tabbar button{min-width:0}
+body:has(#sheetRoot .sheet) .nova-fab{display:none}
+@media (max-width:380px){.htiles{gap:7px}.htile{padding:10px}.htile b{font-size:22px}.hfood{flex-direction:column}.hbars{width:100%}}
 </style>
 
 <canvas id="space" aria-hidden="true"></canvas>
@@ -583,6 +627,11 @@ input.field,textarea.field,.inrow textarea{background:rgba(8,12,34,.75);border:1
       <p class="section-f">From <i>The Kybalion</i> (1908). One principle each week for the family to learn, practice and talk about.</p>
     </section>
 
+    <section class="page" data-tab="health" hidden>
+      <div class="large">Health</div>
+      <div id="healthBody"></div>
+    </section>
+
     <section class="page" data-tab="family" hidden>
       <div class="large">Family</div>
       <div class="list" id="meCard"></div>
@@ -611,6 +660,7 @@ input.field,textarea.field,.inrow textarea{background:rgba(8,12,34,.75);border:1
     <button role="tab" data-go="chat" aria-selected="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.5 3 2 6.8 2 11.5c0 2.6 1.4 4.9 3.6 6.5-.2 1.4-.9 2.6-2 3.4 2.2.1 4.2-.7 5.6-1.9 1 .3 1.9.4 2.8.4 5.5 0 10-3.8 10-8.5S17.5 3 12 3z"/></svg>Chat</button>
     <button role="tab" data-go="tasks" aria-selected="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.4 14.2-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4z"/></svg>Tasks</button>
     <button role="tab" data-go="calm" aria-selected="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1.5 2.3-4 5-4 8a4 4 0 0 0 8 0c0-3-2.5-5.7-4-8zM4 14c0 4.4 3.6 8 8 8s8-3.6 8-8c-1.6 1.6-3.7 2.6-6 2.9V20h-4v-3.1C7.7 16.6 5.6 15.6 4 14z"/></svg>Calm</button>
+    <button role="tab" data-go="health" aria-selected="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.2 10.6 20C5.4 15.4 2 12.3 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 3.8-3.4 6.9-8.6 11.5z"/></svg>Health</button>
     <button role="tab" data-go="family" aria-selected="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm7.5 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM9 13c-3.3 0-7 1.7-7 4.5V20h14v-2.5C16 14.7 12.3 13 9 13zm7.5 0c-.5 0-1 .1-1.5.1 1.3 1 2 2.4 2 4.4V20h5v-2.4c0-2.6-3.3-4.6-5.5-4.6z"/></svg>Family</button>
   </nav>
 </div>
@@ -2207,7 +2257,7 @@ $("#resetBtn").onclick=async()=>{
   const b=$("#resetBtn"),lab=b.querySelector(".grow");
   if(b.dataset.sure!=="1"){b.dataset.sure="1";lab.textContent="Tap again to erase everything";setTimeout(()=>{b.dataset.sure="";lab.textContent="Reset all test data"},4000);return}
   lab.textContent="Clearing…";b.disabled=true;
-  try{for(const n of ["messages","tasks","done","checkins","sessions","fivefold","checkups","live","members"]){const s=await C(n).get();for(const d of s.docs)await C(n).doc(d.id).delete()}
+  try{for(const n of ["messages","tasks","done","checkins","sessions","fivefold","checkups","live","health","meals","members"]){const s=await C(n).get();for(const d of s.docs)await C(n).doc(d.id).delete()}
     await C("family").doc("main").delete();halt();inLive=null;uid=null;store("fh-uid",null);currentTab="today";toast("Test data cleared")}
   catch(e){toast("Couldn't clear everything. Try again.")}
   b.disabled=false;b.dataset.sure="";lab.textContent="Reset all test data";
@@ -2238,7 +2288,260 @@ function openSheet(title,build){closeSheet();
 function closeSheet(){$("#sheetRoot").replaceChildren()}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
 
-function renderAll(){if(!me)return;renderJourneyLib();renderToday();renderFive();renderWisdom();renderLive();renderChat();renderTasks();renderFamily();renderCalmBoard();renderBell()}
+/* HEALTH */
+/* ================= HEALTH: profiles, BMI, energy, eating plans, food log =================
+   Formulas: adults — Mifflin-St Jeor resting energy × activity; kids 3–18 — IOM/National Academies EER equations;
+   kids' BMI — CDC 2000 BMI-for-age (LMS method); daily amounts — Dietary Guidelines for Americans 2025–2030. */
+const CDC_BMI=/*CDC*/{"m":[[2,-2.0112,16.575,0.08059],[2.208,-1.8655,16.443,0.07839],[2.458,-1.6948,16.296,0.07615],[2.708,-1.5474,16.161,0.07435],[2.958,-1.4426,16.039,0.07299],[3.208,-1.3959,15.927,0.07207],[3.458,-1.4161,15.826,0.07157],[3.708,-1.5044,15.734,0.07147],[3.958,-1.6537,15.653,0.07173],[4.208,-1.8505,15.582,0.07231],[4.458,-2.0767,15.521,0.07315],[4.708,-2.3133,15.47,0.07424],[4.958,-2.5428,15.43,0.07552],[5.208,-2.7513,15.401,0.07699],[5.458,-2.9298,15.383,0.07863],[5.708,-3.0739,15.376,0.08043],[5.958,-3.1829,15.38,0.08237],[6.208,-3.2588,15.394,0.08445],[6.458,-3.3051,15.419,0.08664],[6.708,-3.3263,15.453,0.08894],[6.958,-3.3269,15.496,0.09132],[7.208,-3.3109,15.549,0.09377],[7.458,-3.2823,15.61,0.09625],[7.708,-3.2441,15.679,0.09875],[7.958,-3.1992,15.755,0.10126],[8.208,-3.1496,15.839,0.10375],[8.458,-3.0972,15.93,0.1062],[8.708,-3.0434,16.027,0.10861],[8.958,-2.9892,16.131,0.11096],[9.208,-2.9354,16.241,0.11322],[9.458,-2.8826,16.356,0.11541],[9.708,-2.8313,16.477,0.11749],[9.958,-2.7817,16.603,0.11948],[10.208,-2.7341,16.734,0.12135],[10.458,-2.6886,16.869,0.1231],[10.708,-2.6452,17.009,0.12474],[10.958,-2.6039,17.152,0.12626],[11.208,-2.5646,17.3,0.12765],[11.458,-2.5273,17.45,0.12891],[11.708,-2.4919,17.604,0.13006],[11.958,-2.4583,17.762,0.13108],[12.208,-2.4263,17.922,0.13197],[12.458,-2.3957,18.084,0.13276],[12.708,-2.3665,18.249,0.13342],[12.958,-2.3385,18.416,0.13398],[13.208,-2.3116,18.584,0.13443],[13.458,-2.2855,18.755,0.13478],[13.708,-2.2602,18.927,0.13504],[13.958,-2.2355,19.1,0.13521],[14.208,-2.2112,19.274,0.1353],[14.458,-2.1873,19.448,0.13532],[14.708,-2.1637,19.624,0.13527],[14.958,-2.1402,19.799,0.13516],[15.208,-2.1167,19.975,0.135],[15.458,-2.0934,20.15,0.13479],[15.708,-2.07,20.325,0.13456],[15.958,-2.0467,20.5,0.13429],[16.208,-2.0236,20.673,0.13401],[16.458,-2.0007,20.846,0.13372],[16.708,-1.9782,21.017,0.13343],[16.958,-1.9563,21.186,0.13315],[17.208,-1.9352,21.354,0.13289],[17.458,-1.9152,21.52,0.13265],[17.708,-1.8966,21.683,0.13246],[17.958,-1.8798,21.843,0.13232],[18.208,-1.8651,22.001,0.13224],[18.458,-1.8528,22.155,0.13223],[18.708,-1.8433,22.306,0.13231],[18.958,-1.8367,22.453,0.13248],[19.208,-1.8332,22.596,0.13277],[19.458,-1.8328,22.735,0.13317],[19.708,-1.8356,22.869,0.13372],[19.958,-1.8411,22.999,0.13441],[20.042,-1.8436,23.041,0.13468]],"f":[[2,-0.9866,16.423,0.08545],[2.208,-1.184,16.252,0.08346],[2.458,-1.4437,16.064,0.08149],[2.708,-1.7204,15.895,0.07997],[2.958,-2.0033,15.745,0.07888],[3.208,-2.28,15.613,0.0782],[3.458,-2.5385,15.499,0.07791],[3.708,-2.7685,15.402,0.07801],[3.958,-2.9626,15.322,0.07848],[4.208,-3.1168,15.258,0.0793],[4.458,-3.2303,15.209,0.08045],[4.708,-3.3048,15.175,0.08191],[4.958,-3.344,15.155,0.08366],[5.208,-3.3527,15.149,0.08566],[5.458,-3.3359,15.156,0.08789],[5.708,-3.2987,15.174,0.09032],[5.958,-3.2459,15.204,0.09291],[6.208,-3.1817,15.245,0.09563],[6.458,-3.1096,15.297,0.09846],[6.708,-3.0325,15.358,0.10137],[6.958,-2.9529,15.428,0.10433],[7.208,-2.8727,15.507,0.10732],[7.458,-2.7934,15.594,0.1103],[7.708,-2.716,15.689,0.11327],[7.958,-2.6413,15.791,0.1162],[8.208,-2.5701,15.9,0.11906],[8.458,-2.5026,16.015,0.12186],[8.708,-2.4391,16.136,0.12456],[8.958,-2.3798,16.263,0.12717],[9.208,-2.3247,16.394,0.12966],[9.458,-2.2738,16.53,0.13203],[9.708,-2.2271,16.67,0.13428],[9.958,-2.1846,16.814,0.13639],[10.208,-2.1461,16.961,0.13835],[10.458,-2.1114,17.11,0.14018],[10.708,-2.0806,17.263,0.14186],[10.958,-2.0535,17.417,0.14339],[11.208,-2.0299,17.573,0.14478],[11.458,-2.0098,17.731,0.14602],[11.708,-1.993,17.889,0.14712],[11.958,-1.9794,18.048,0.14807],[12.208,-1.9689,18.208,0.14889],[12.458,-1.9614,18.367,0.14958],[12.708,-1.9568,18.526,0.15014],[12.958,-1.955,18.684,0.15058],[13.208,-1.9559,18.841,0.15091],[13.458,-1.9594,18.997,0.15113],[13.708,-1.9654,19.151,0.15124],[13.958,-1.9738,19.302,0.15127],[14.208,-1.9844,19.452,0.15121],[14.458,-1.9973,19.599,0.15107],[14.708,-2.0121,19.743,0.15087],[14.958,-2.0289,19.884,0.15061],[15.208,-2.0474,20.022,0.1503],[15.458,-2.0675,20.156,0.14996],[15.708,-2.0889,20.286,0.1496],[15.958,-2.1114,20.412,0.14922],[16.208,-2.1349,20.534,0.14884],[16.458,-2.1589,20.651,0.14847],[16.708,-2.1833,20.764,0.14812],[16.958,-2.2077,20.871,0.14782],[17.208,-2.2317,20.973,0.14756],[17.458,-2.2549,21.07,0.14737],[17.708,-2.2769,21.162,0.14726],[17.958,-2.2973,21.248,0.14725],[18.208,-2.3157,21.328,0.14735],[18.458,-2.3314,21.402,0.14758],[18.708,-2.3442,21.47,0.14796],[18.958,-2.3534,21.532,0.1485],[19.208,-2.3588,21.587,0.14923],[19.458,-2.3597,21.635,0.15016],[19.708,-2.3559,21.677,0.15132],[19.958,-2.347,21.712,0.15272],[20.042,-2.3428,21.722,0.15324]]};
+let health={},meals=[],hPerson=null,hDay=null;
+const ACT=[{v:"light",n:"Light",s:"Mostly sitting, little exercise"},{v:"moderate",n:"Moderate",s:"Walks or exercise 1–3 days a week"},{v:"active",n:"Active",s:"Exercise or sports 3–5 days a week"},{v:"very",n:"Very active",s:"Hard training daily or a physical job"}];
+const CONDS=[
+ {v:"gluten",n:"Gluten-free",e:"🌾",s:"Celiac or gluten / wheat allergy"},
+ {v:"lactose",n:"Lactose intolerant",e:"🥛",s:"Milk upsets the stomach"},
+ {v:"sugar",n:"Blood sugar",e:"🩸",s:"Prediabetes or diabetes"},
+ {v:"bp",n:"Blood pressure",e:"❤️",s:"High blood pressure"},
+ {v:"chol",n:"Cholesterol",e:"🫀",s:"High cholesterol"},
+ {v:"nut",n:"Nut allergy",e:"🥜",s:"Peanuts or tree nuts"},
+ {v:"veg",n:"Vegetarian",e:"🥦",s:"No meat or fish"},
+ {v:"sport",n:"Sports / training",e:"⚽",s:"Practice or workouts most days"}];
+const GOALS=[{v:"keep",n:"Stay where I am"},{v:"lose",n:"Lose weight slowly"},{v:"gain",n:"Gain weight"},{v:"muscle",n:"Build muscle"}];
+const MEALT=[{v:"b",n:"Breakfast",e:"🌅"},{v:"l",n:"Lunch",e:"☀️"},{v:"d",n:"Dinner",e:"🌙"},{v:"s",n:"Snacks",e:"🍎"}];
+
+/* Food list: c=calories, p=protein g, v/f/g/d = vegetables (cups), fruit (cups), grain servings, dairy (cups), su=added sugar g.
+   Flags: gl=has gluten, oat=oats (needs certified GF), chk=often hides gluten (check label), lac=lactose, nut=nuts. Values are typical USDA averages. */
+const FOODS=[
+ ["Apple, medium","manzana",95,0.5,{f:1}],["Banana, medium","guineo",105,1.3,{f:1}],["Orange, medium","naranja",62,1.2,{f:.75}],["Grapes, 1 cup","uvas",104,1.1,{f:1}],
+ ["Strawberries, 1 cup","fresas",50,1,{f:1}],["Blueberries, 1 cup","",85,1.1,{f:1}],["Mango, 1 cup","",100,1.4,{f:1}],["Pineapple, 1 cup","piña",82,.9,{f:1}],
+ ["Watermelon, 1 cup","sandía patilla",46,.9,{f:1}],["Papaya, 1 cup","lechosa",62,.7,{f:1}],["Orange juice 100%, 1 cup","jugo de naranja",112,1.7,{f:1}],["Raisins, ¼ cup","pasas",120,1.2,{f:.5}],
+ ["Avocado, ½","aguacate",120,1.5,{}],["Broccoli, 1 cup cooked","brócoli",55,3.7,{v:1}],["Green salad, 2 cups","ensalada verde lechuga",20,1.5,{v:1}],["Baby carrots, 12","zanahoria",42,.8,{v:1}],
+ ["Tomato, medium","tomate",22,1.1,{v:.75}],["Green beans, 1 cup","habichuelas tiernas vainitas",44,2.4,{v:1}],["Corn, 1 cup","maíz",130,4.5,{v:1}],["Baked potato, medium","papa",160,4.3,{v:1}],
+ ["Sweet potato, medium","batata",103,2.3,{v:1}],["French fries, medium","papas fritas",365,4,{v:1}],["Spinach, 1 cup cooked","espinaca",41,5.3,{v:1}],["Mixed vegetables, 1 cup","vegetales mixtos",80,3.5,{v:1}],
+ ["Mangú, 1 cup","mangu platano verde",300,2.5,{v:1}],["Tostones, 5 pieces","plátano frito verde",220,1.5,{v:.5}],["Fried sweet plantain, ½","maduro plátano maduro",180,1.2,{v:.5}],["Yuca, 1 cup boiled","cassava",330,2.8,{v:1}],
+ ["Stewed beans, 1 cup","habichuelas guisadas",250,14,{}],["Beans, ½ cup","habichuelas frijoles lentejas",115,7.5,{}],
+ ["White rice, 1 cup","arroz blanco",205,4.3,{g:2}],["Brown rice, 1 cup","arroz integral",218,4.5,{g:2}],["Bread, 1 slice","pan",80,3,{g:1},"gl"],["Whole-wheat bread, 1 slice","pan integral",80,4,{g:1},"gl"],
+ ["Gluten-free bread, 1 slice","pan sin gluten",90,1,{g:1}],["Pasta, 1 cup","espaguetis",220,8,{g:2},"gl"],["Gluten-free pasta, 1 cup","pasta sin gluten",210,4,{g:2}],["Flour tortilla, 8-inch","",145,4,{g:1.5},"gl"],
+ ["Corn tortilla, 6-inch","",60,1.5,{g:1}],["Oatmeal, 1 cup cooked","avena",165,6,{g:2},"oat"],["Cold cereal, 1 cup","cereal",110,2,{g:1,su:4},"gl"],["Bagel, plain","",270,10,{g:3},"gl"],
+ ["Pancakes, 2","panqueques",180,5,{g:2,su:3},"gl"],["Waffle, 1","",95,2,{g:1,su:2},"gl"],["Crackers, 7","galletas de soda",130,2,{g:1},"gl"],["Popcorn, 3 cups","palomitas",95,3,{g:1}],
+ ["Quinoa, 1 cup","",222,8,{g:2}],["Arepa (corn), 1","arepa de maíz",160,3,{g:1.5}],
+ ["Pizza, 1 slice","",285,12,{g:2,d:.5},"gl","lac"],["Burger with bun","hamburguesa",450,25,{g:2},"gl"],["Turkey sandwich","sándwich de pavo",320,22,{g:2},"gl","chk"],["Chicken nuggets, 6","",280,14,{g:1},"gl"],
+ ["Hot dog with bun","perro caliente",270,10,{g:1.5},"gl","chk"],["Mac and cheese, 1 cup","macarrones con queso",350,13,{g:2,d:.5},"gl","lac"],["Grilled cheese sandwich","sándwich de queso",400,15,{g:2,d:1},"gl","lac"],["Peanut butter & jelly sandwich","",380,13,{g:2,su:10},"gl","nut"],
+ ["Spaghetti with meat sauce, 1½ cups","espaguetis con carne",450,22,{g:3,v:.5},"gl"],["Tacos (corn, beef), 2","",340,18,{g:2}],["Burrito bowl","",650,40,{g:2,v:.5}],["Sushi roll, 8 pieces","",300,10,{g:2},"chk"],
+ ["Rice, beans & chicken plate","la bandera",750,45,{g:3,v:.5}],["Arroz con pollo, 1 cup","moro locrio",320,18,{g:1.5}],["Sancocho, 2 cups","",400,28,{v:1}],["Empanada, 1","pastelito",280,9,{g:1.5},"gl"],
+ ["Quipe, 1","kibbeh",200,9,{g:1},"gl"],["Chicken breast, 4 oz","pollo pechuga",185,35,{}],["Stewed chicken, 1 cup","pollo guisado",300,30,{v:.25}],["Fried chicken (breaded), 1 piece","pollo frito",320,25,{g:.5},"gl"],
+ ["Fried salami, 3 slices","salami frito",300,12,{},"chk"],["Egg, 1","huevo",72,6,{}],["Scrambled eggs, 2","huevos revueltos",200,13,{}],["Ground beef, 4 oz","carne molida",290,30,{}],
+ ["Steak, 4 oz","bistec res",270,33,{}],["Pork chop, 4 oz","chuleta cerdo",240,32,{}],["Salmon, 4 oz","salmón pescado",235,25,{}],["Tuna, 3 oz can","atún",100,22,{}],
+ ["Shrimp, 4 oz","camarones",135,26,{}],["Fried fish (breaded)","pescado frito",300,20,{g:.5},"gl"],["Bacon, 3 slices","tocineta",130,9,{}],["Tofu, ½ cup","",95,10,{}],
+ ["Turkey deli slices, 2 oz","pavo jamón",60,10,{},"chk"],["Peanut butter, 2 tbsp","mantequilla de maní",190,7,{},"nut"],["Almonds, 1 oz","almendras",165,6,{},"nut"],["Protein shake","batida de proteína",160,25,{d:.5},"lac"],
+ ["Milk, 1 cup","leche",150,8,{d:1},"lac"],["Low-fat milk, 1 cup","leche descremada",105,8,{d:1},"lac"],["Lactose-free milk, 1 cup","leche deslactosada",120,8,{d:1}],["Soy milk, 1 cup","leche de soya",100,7,{d:1}],
+ ["Yogurt, plain 1 cup","yogur",150,9,{d:1},"lac"],["Greek yogurt, 6 oz","yogur griego",130,17,{d:.75}],["Flavored yogurt, 6 oz","",150,6,{d:.75,su:12},"lac"],["Cheese, 1 oz","queso",110,7,{d:.67}],
+ ["String cheese, 1","",80,7,{d:.67}],["Fried cheese, 3 slices","queso frito",320,18,{d:1.3},"lac"],["Ice cream, ½ cup","helado",140,2.5,{d:.25,su:14},"lac"],["Morir soñando, 1 cup","",200,5,{d:.5,f:.5,su:15},"lac"],
+ ["Habichuelas con dulce, 1 cup","",350,9,{su:30},"lac","chk"],["Cookie, 1","galleta",140,1.5,{su:10},"gl"],["Donut, glazed","dona",250,3,{su:12},"gl"],["Cake, 1 slice","bizcocho",350,4,{su:30},"gl","lac"],
+ ["Chips, 1 oz bag","papitas",155,2,{}],["Candy bar","chocolate",250,3,{su:24}],["Granola bar","barra de granola",120,2,{g:.5,su:7},"oat"],["Soda, 12 oz","refresco",150,0,{su:39}],
+ ["Juice drink, 8 oz","jugo",120,0,{su:28}],["Sports drink, 20 oz","",140,0,{su:34}],["Coffee, black","café",2,.3,{}],["Coffee with milk & sugar","café con leche",70,2,{su:8}],
+ ["Beer, 12 oz","cerveza",150,1.6,{},"gl"],["Wine, 5 oz","vino",125,.1,{}],["Water","agua",0,0,{}],["Butter, 1 tbsp","mantequilla",100,0,{}],
+ ["Oil, 1 tbsp","aceite",120,0,{}],["Mayonnaise, 1 tbsp","mayonesa",95,0,{}],["Ketchup, 1 tbsp","",20,0,{su:4}],["Salad dressing, 2 tbsp","aderezo",140,0,{},"chk"],["Soy sauce, 1 tbsp","salsa de soya",10,1,{},"gl"],
+].map(([n,es,c,p,grp,...fl])=>({n,es,c,p,...grp,fl}));
+
+const r50=x=>Math.round(x/50)*50, r5=x=>Math.round(x*2)/2;
+function ageOf(h){if(!h?.yr)return null;const now=new Date();return (now.getFullYear()-h.yr)+((now.getMonth()+1)-(h.mo||7))/12}
+const kg=h=>(h.lb||0)*0.45359237, meters=h=>(h.hin||0)*0.0254;
+function bmiOf(h){const m=meters(h);return m&&h.lb?kg(h)/(m*m):null}
+function normCdf(z){const t=1/(1+.2316419*Math.abs(z)),d=.3989423*Math.exp(-z*z/2),p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return z>0?1-p:p}
+function bmiPct(h){const a=ageOf(h),b=bmiOf(h),tb=CDC_BMI[h.sex==="f"?"f":"m"];if(a==null||!b||a<2||a>=20||!tb?.length)return null;
+  let i=tb.findIndex(r=>r[0]>a);if(i<1)i=i<0?tb.length-1:1;const A=tb[i-1],B=tb[i],t=Math.max(0,Math.min(1,(a-A[0])/((B[0]-A[0])||1)));
+  const L=A[1]+(B[1]-A[1])*t,M=A[2]+(B[2]-A[2])*t,S=A[3]+(B[3]-A[3])*t,z=Math.abs(L)<1e-6?Math.log(b/M)/S:(Math.pow(b/M,L)-1)/(L*S);return Math.round(normCdf(z)*1000)/10}
+function bmiInfo(h){const a=ageOf(h),b=bmiOf(h);if(!b)return null;const v=Math.round(b*10)/10;
+  if(a!=null&&a<20){const p=bmiPct(h);if(p==null)return{v,kid:true,label:"—",tone:"label-2"};
+    return{v,kid:true,pct:p,label:p<5?"Below the healthy range":p<85?"Healthy range":p<95?"Above the healthy range":"Well above the healthy range",tone:p<5||p>=85?"orange":"green"}}
+  return{v,label:v<18.5?"Below the healthy range":v<25?"Healthy range":v<30?"Above the healthy range":"Well above the healthy range",tone:v<18.5||v>=25?"orange":"green"}}
+function energyOf(h){const a=ageOf(h);if(a==null||!h.lb||!h.hin)return null;const w=kg(h),m=meters(h),i=Math.max(0,ACT.findIndex(x=>x.v===h.act));
+  if(a<19){const boy=h.sex!=="f",pa=(boy?[1,1.13,1.26,1.42]:[1,1.16,1.31,1.56])[i];
+    const e=boy?88.5-61.9*a+pa*(26.7*w+903*m):135.3-30.8*a+pa*(10*w+934*m);return r50(e+(a<9?20:25))}
+  const rmr=10*w+625*m-5*a+(h.sex==="f"?-161:5),f=[1.2,1.375,1.55,1.725][i];let e=rmr*f;
+  if(h.goal==="lose")e=Math.max(h.sex==="f"?1200:1500,e-500);if(h.goal==="gain")e+=300;if(h.goal==="muscle")e+=250;return r50(e)}
+function planOf(h){const cal=energyOf(h);if(!cal)return null;const a=ageOf(h),s=Math.max(.6,Math.min(1.6,cal/2000)),cond=h.cond||[];
+  const pPer=a<14?.95:a<19?.85:1.2;let pLo=Math.round(kg(h)*pPer),pHi=a<19?null:Math.round(kg(h)*1.6);
+  if(cond.includes("sport")&&a<19){pLo=Math.round(kg(h)*1.2);pHi=Math.round(kg(h)*1.6)}
+  return{cal,veg:Math.max(1,r5(3*s)),fruit:Math.max(1,r5(2*s)),grain:Math.max(2,Math.min(8,r5(3*s))),dairy:a<4?2:a<9?2.5:3,
+    pLo,pHi,sugar:a<10?0:Math.round(cal*.1/4),satfat:Math.round(cal*.1/9),sodium:a<9?1500:a<14?1800:2300,
+    water:a<9?5:a<14?(h.sex==="f"?7:8):a<19?(h.sex==="f"?8:11):(h.sex==="f"?9:13)}}
+const mealsOn=(id,day)=>meals.filter(m=>m.by===id&&m.date===day);
+function totals(list){const t={c:0,p:0,v:0,f:0,g:0,d:0,su:0};list.forEach(m=>{const q=m.qty||1;["c","p","v","f","g","d","su"].forEach(k=>t[k]+=(m[k]||0)*q)});return t}
+const fmt1=x=>String(Math.round(x*10)/10);
+
+/* tips: Dietary Guidelines for Americans 2025–2030 plus condition-specific advice */
+const DAILY_TIPS=["Build each meal around protein: eggs, beans, chicken, fish or yogurt.","Fill half your plate with vegetables and fruit, in many colors.","Water is the best drink. Keep a bottle with you.",
+ "Choose foods closest to how they grow. Cut back on highly processed snacks.","Pick whole grains: brown rice, quinoa, corn tortillas or certified gluten-free oats.","Limit added sugar: skip soda and sugary juice drinks.",
+ "Eat together as a family when you can, and eat slowly.","Plain milk, yogurt and cheese count toward dairy. Full-fat is fine if there's no added sugar.","Season with garlic, onion, cilantro, oregano and lime instead of extra salt.","A good breakfast fuels school and work. Try eggs and fruit."];
+const COND_TIPS={
+ gluten:{t:"Gluten-free plan",eat:["Rice, corn, potatoes, yuca, plantains (mangú, tostones, maduros)","Beans, lentils, eggs, chicken, fish, meat (plain, not breaded)","Quinoa, buckwheat, millet, certified gluten-free oats","All fruits and vegetables","Plain milk, yogurt and cheese","Gluten-free bread and pasta"],
+  avoid:["Wheat in any form: flour, whole wheat, semolina, durum, spelt, farro, bulgur (quipe)","Barley, rye, malt (malt drinks, malt vinegar) and regular beer","Regular soy sauce (use gluten-free tamari)","Bread, pasta, crackers, cookies, cakes, empanadas, pizza and breaded or fried-in-shared-oil foods"],
+  watch:["Read labels every time. “Gluten-free” on the label means under 20 ppm.","Hidden gluten: seasoning cubes, gravy, sauces, salami, hot dogs, deli meat, salad dressings.","Cross-contact: use your own toaster, colander and butter; wipe counters.","Get fiber from beans, fruit, vegetables and brown rice; pick enriched gluten-free breads for iron and B vitamins.","Good news: most Dominican food is naturally gluten-free. Rice, habichuelas, pollo guisado, mangú, yuca and sancocho work. Just skip flour thickeners and check the seasoning cube label."],
+  day:{b:"Mangú with 2 eggs and a little queso, plus papaya",l:"Rice, habichuelas guisadas, chicken and a green salad",s:"Greek yogurt with berries, or an apple with cheese",d:"Baked salmon, sweet potato and broccoli"}},
+ lactose:{t:"Lactose-light plan",eat:["Lactose-free milk, fortified soy milk","Greek yogurt and yogurt with live cultures","Hard cheeses (cheddar, parmesan)","Calcium from beans, broccoli, almonds, canned salmon"],avoid:["Large glasses of regular milk","Ice cream, milkshakes, morir soñando with regular milk","Soft cheeses in big portions"],watch:["Small amounts with a meal are often fine.","Lactase pills before dairy can help.","Get 3 servings of calcium foods every day."]},
+ sugar:{t:"Steady blood sugar",eat:["Half the plate vegetables, a quarter protein, a quarter starch","Beans, lentils, non-starchy vegetables","Whole fruit instead of juice","Protein with every meal and snack"],avoid:["Soda, juice, sweet coffee and sugary drinks","Large portions of white rice, bread, plantains","Desserts and sweets every day"],watch:["Spread carbs through the day; don't skip meals.","A 10-minute walk after meals helps.","Follow your doctor's plan and check your levels as told."]},
+ bp:{t:"Heart-healthy, lower salt",eat:["Fruits and vegetables (potassium): bananas, avocado, spinach, beans","Plain dairy, nuts, fish","Herbs, lime and garlic for flavor"],avoid:["Salami, hot dogs, deli meats","Seasoning cubes, adobo and seasoned salts (high in salt)","Canned soups, chips, fast food"],watch:["Keep sodium under 2,300 mg a day (1,500 if your doctor says so).","Read labels for sodium.","Take medicines as prescribed."]},
+ chol:{t:"Cholesterol-friendly",eat:["Beans, lentils, fruits and vegetables (fiber)","Fish 2 times a week (salmon, sardines)","Olive oil, avocado, nuts (if no allergy)","Certified gluten-free oats if you're gluten-free"],avoid:["Fried foods and fried cheese often","Fatty and processed meats","Butter and lard in large amounts"],watch:["Keep saturated fat under 10% of calories.","Stay active most days."]},
+ nut:{t:"Nut-safe eating",eat:["Seeds (sunflower, pumpkin) if allowed by your doctor","Beans, eggs, dairy and meats for protein"],avoid:["Peanuts and tree nuts, and foods made with them","Foods labeled “may contain nuts”"],watch:["Read every label, every time.","Keep the epinephrine your doctor prescribed with you.","Tell school and friends' parents."]},
+ veg:{t:"Vegetarian plan",eat:["Beans, lentils, eggs, dairy, tofu, quinoa for protein","Leafy greens and beans for iron, with vitamin C (citrus) to absorb it"],avoid:["Relying on bread and pasta alone"],watch:["Get vitamin B12 from dairy, eggs or fortified foods.","Include protein at every meal."]},
+ sport:{t:"Sports fuel",eat:["A meal with carbs and protein 2–3 hours before practice","After practice: chocolate milk, a sandwich, or rice and chicken","Fruit and water during long sessions"],avoid:["Skipping breakfast on game days","Energy drinks"],watch:["Drink water before, during and after.","Protein at every meal helps muscles recover."]},
+ kid:{t:"Growing strong",eat:["3 meals and 1–2 snacks a day","Milk, yogurt or cheese for strong bones","Fruit and vegetables at every meal"],avoid:["Soda and sugary drinks","Dieting: kids need energy to grow"],watch:["Listen to your hunger and fullness.","Eat breakfast before school.","Your doctor checks your growth at check-ups."]}};
+
+function canSeeHealth(id){return isParent()||id===uid}
+function healthPeople(){return memberList().filter(m=>canSeeHealth(m.id))}
+function renderHealth(){
+  const box=$("#healthBody");if(!box||!me)return;
+  const people=healthPeople();if(!hPerson||!people.some(m=>m.id===hPerson))hPerson=uid;
+  if(!hDay)hDay=TODAY;
+  box.replaceChildren();
+  if(people.length>1){const row=el("div","hpeople");people.forEach(m=>{const b=el("button","hperson");b.setAttribute("aria-pressed",m.id===hPerson);b.append(av(m,"sm"),el("span","",m.name));
+    b.onclick=()=>{hPerson=m.id;renderHealth()};row.append(b)});box.append(row)}
+  const who=people.find(m=>m.id===hPerson)||me,h=health[hPerson],canEdit=isParent()||hPerson===uid;
+  if(!h||!h.lb){const e=emptyBox("🩺",(hPerson===uid?"Set up your":who.name+"'s")+" health profile","Add age, height, weight and any food needs. Then you'll get a daily plan, BMI and a food log.");
+    if(canEdit){const b=el("button","btn",hPerson===uid?"Set up my profile":"Set up "+who.name);b.style.marginTop="14px";b.onclick=()=>openHealthProfile(hPerson);e.append(b)}box.append(e);return}
+  const a=ageOf(h),kid=a!=null&&a<18,plan=planOf(h),bi=bmiInfo(h),t=totals(mealsOn(hPerson,hDay));
+  /* top tiles */
+  const tiles=el("div","htiles");
+  const tB=el("button","htile");tB.append(el("span","k","BMI"));
+  if(bi){if(kid&&!isParent()){tB.append(el("b","",bi.label==="Healthy range"?"Growing well":"Check-ups"),el("span","s",bi.label==="Healthy range"?"💪 Right on track":"Your doctor tracks growth"))}
+    else{const v=el("b","",fmt1(bi.v));tB.append(v,el("span","s "+bi.tone,bi.kid&&bi.pct!=null?bi.label+" · "+Math.round(bi.pct)+"th percentile":bi.label))}}
+  tB.onclick=()=>openBmiInfo(hPerson);
+  const tE=el("div","htile");tE.append(el("span","k",kid?"ENERGY TO GROW":"DAILY ENERGY"),el("b","",plan.cal.toLocaleString()),el("span","s","calories a day"));
+  const tW=el("div","htile");tW.append(el("span","k","WATER"),el("b","",plan.water),el("span","s","cups a day"));
+  tiles.append(tB,tE,tW);box.append(tiles);
+  /* today's food */
+  const dayRow=el("div","navrow");dayRow.style.margin="22px 4px 7px";const lbl=el("span","section-h",hDay===TODAY?"Today's food":new Date(hDay+"T12:00").toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"}));lbl.style.margin="0";
+  const nav=el("span","hdaynav"),pv=el("button","",""),nx=el("button","","");pv.innerHTML="‹";nx.innerHTML="›";pv.setAttribute("aria-label","Previous day");nx.setAttribute("aria-label","Next day");
+  const shift=n=>{const d=new Date(hDay+"T12:00");d.setDate(d.getDate()+n);const k=dkey(d);if(k>TODAY||k<WEEK)return;hDay=k;renderHealth()};pv.onclick=()=>shift(-1);nx.onclick=()=>shift(1);pv.disabled=hDay<=WEEK;nx.disabled=hDay>=TODAY;
+  nav.append(pv,nx);dayRow.append(lbl,nav);box.append(dayRow);
+  const card=el("div","hfood"),ring=el("div","ring");const frac=t.c/plan.cal,over=t.c>plan.cal*1.1&&!kid;
+  ring.innerHTML=ringSVG(frac,108,12,over?"var(--orange)":frac>=.85?"var(--green)":"var(--tint)")+`<div class="mid"><div><b>${Math.round(t.c).toLocaleString()}</b><span>of ${plan.cal.toLocaleString()} cal</span></div></div>`;
+  const bars=el("div","hbars");
+  const bar=(name,have,need,unit,col)=>{const r=el("div","hbar");const top=el("div","top");top.append(el("span","",name),el("span","n",fmt1(have)+" / "+fmt1(need)+" "+unit));
+    const tr=el("div","tr"),i=el("i");i.style.width=Math.min(100,need?have/need*100:0)+"%";i.style.background=col;tr.append(i);r.append(top,tr);return r};
+  bars.append(bar("Protein",t.p,plan.pLo,"g","var(--pink)"),bar("Vegetables",t.v,plan.veg,"cups","var(--green)"),bar("Fruit",t.f,plan.fruit,"cups","var(--orange)"),bar("Grains",t.g,plan.grain,"serv.","var(--yellow)"),bar("Dairy",t.d,plan.dairy,"cups","var(--tint)"));
+  card.append(ring,bars);box.append(card);
+  const note=t.c===0?"Nothing logged yet. Add what you eat to see how the day adds up.":
+    over?"A bit over today's energy. Tomorrow, try more vegetables and water.":
+    plan.sugar===0&&t.su>0?"Kids under 10 do best with no added sugar. Try fruit instead of sweets.":
+    plan.sugar&&t.su>plan.sugar?"Added sugar is over today's limit ("+plan.sugar+" g). Swap sweet drinks for water.":
+    t.p<plan.pLo*.5&&t.c>plan.cal*.5?"Add more protein: eggs, beans, chicken, fish or yogurt.":
+    t.v<plan.veg*.5&&t.c>plan.cal*.5?"Add vegetables to the next meal.":t.f===0&&t.c>plan.cal*.3?"No fruit yet today. Add a banana, papaya or berries. 🍌":"Nice balance so far. Keep it going! 🌱";
+  box.append(el("p","section-f",note));
+  if(canEdit){const add=el("button","btn","+ Add food");add.style.marginTop="10px";add.onclick=()=>openAddFood(hPerson);box.append(add)}
+  /* meals list */
+  const today=mealsOn(hPerson,hDay);
+  MEALT.forEach(mt=>{const items=today.filter(m=>m.meal===mt.v);if(!items.length)return;
+    box.append(el("div","section-h",mt.e+" "+mt.n+" · "+Math.round(totals(items).c)+" cal"));const l=el("div","list plain");
+    items.sort((x,y)=>x.at-y.at).forEach(m=>{const c=el("div","cell"),g=el("span","grow");g.append(el("span","t",(m.qty&&m.qty!==1?fmt1(m.qty)+" × ":"")+m.n),el("span","s",Math.round(m.c*(m.qty||1))+" cal · "+Math.round(m.p*(m.qty||1))+" g protein"+(m.est?" · estimate":"")));c.append(g);
+      if((m.fl||[]).includes("gl")&&(h.cond||[]).includes("gluten"))c.append(el("span","hwarn","⚠ gluten"));
+      if(canEdit){const d=el("button","del","Remove");d.onclick=()=>C("meals").doc(m.id).delete().catch(()=>toast("Couldn't remove it. Try again."));c.append(d)}l.append(c)});box.append(l)});
+  /* week */
+  const wk=el("div","hweek");for(let i=6;i>=0;i--){const k=daysAgo(i),c=totals(mealsOn(hPerson,k)).c,col=el("button","hday");col.setAttribute("aria-pressed",k===hDay);col.setAttribute("aria-label",k+" "+Math.round(c)+" calories");
+    const b=el("i");b.style.height=Math.min(100,c/plan.cal*100)+"%";const lab=new Date(k+"T12:00").toLocaleDateString(undefined,{weekday:"narrow"});col.append(el("span","bar"),el("span","",lab));col.firstChild.append(b);col.onclick=()=>{hDay=k;renderHealth()};wk.append(col)}
+  box.append(el("div","section-h","This week"),wk);
+  /* plan */
+  box.append(el("div","section-h",(hPerson===uid?"Your":who.name+"'s")+" daily plan"));
+  const pl=el("div","list plain");const row=(e,tt,ss)=>{const c=el("div","cell"),g=el("span","grow");g.append(el("span","t",tt),el("span","s",ss));c.append(el("span","hic",e),g);pl.append(c)};
+  row("🍗","Protein: "+plan.pLo+(plan.pHi?"–"+plan.pHi:"+")+" g",a<19?"Eggs, beans, chicken, fish, milk or yogurt at each meal":"Make protein the center of each meal (1.2–1.6 g per kg of body weight)");
+  row("🥦","Vegetables: "+fmt1(plan.veg)+" cups","Many colors; 2 cups of leafy greens = 1 cup");
+  row("🍎","Fruit: "+fmt1(plan.fruit)+" cups","Whole fruit is better than juice");
+  row("🌾","Grains: "+fmt1(plan.grain)+" servings",(h.cond||[]).includes("gluten")?"Gluten-free whole grains: brown rice, quinoa, corn, certified GF oats (1 serving = ½ cup rice)":"Mostly whole grains (1 serving = 1 slice bread or ½ cup rice)");
+  row("🥛","Dairy: "+fmt1(plan.dairy)+" cups",(h.cond||[]).includes("lactose")?"Lactose-free milk, Greek yogurt or hard cheese":"Milk, yogurt or cheese with no added sugar");
+  row("🍬",plan.sugar?"Added sugar: under "+plan.sugar+" g":"Added sugar: none",plan.sugar?"About "+Math.round(plan.sugar/4)+" teaspoons. One soda has 39 g.":"Kids under 10 do best with no added sugar");
+  row("🧂","Sodium: under "+plan.sodium.toLocaleString()+" mg","Watch salami, seasoning cubes, chips and fast food");
+  row("🥩","Saturated fat: under "+plan.satfat+" g","About 10% of daily energy");
+  box.append(pl);
+  box.append(el("p","section-f","Based on the Dietary Guidelines for Americans 2025–2030. "+(kid?"Kids' amounts are for healthy growth, not dieting.":"Energy uses the Mifflin-St Jeor formula.")+" Not medical advice. Ask your doctor about your own needs."));
+  /* condition plans */
+  const cs=[...(h.cond||[])];if(kid)cs.unshift("kid");
+  if(cs.length){box.append(el("div","section-h","Made for "+(hPerson===uid?"you":who.name)));cs.forEach(k=>{const T=COND_TIPS[k];if(!T)return;const b=el("button","hcond");const cd=CONDS.find(x=>x.v===k);
+    b.append(el("span","e",cd?.e||"🌱"),el("span","grow",T.t),el("span","chev","›"));b.onclick=()=>openCondPlan(k,hPerson);box.append(b)})}
+  /* tip */
+  const tip=DAILY_TIPS[(new Date().getDate()+hPerson.length)%DAILY_TIPS.length];box.append(el("div","section-h","Tip of the day"));const tp=el("div","htip");tp.append(el("span","","💡 "+tip));box.append(tp);
+  /* coco */
+  const ask=el("button","btn soft","✨ Ask "+GN()+" for a meal plan");ask.style.marginTop="14px";ask.onclick=()=>askCocoPlan(hPerson);box.append(ask);
+  if(canEdit){const ed=el("button","btn gray","Edit "+(hPerson===uid?"my":who.name+"'s")+" profile");ed.style.marginTop="10px";ed.onclick=()=>openHealthProfile(hPerson);box.append(ed)}
+}
+function openBmiInfo(id){const h=health[id],bi=bmiInfo(h),a=ageOf(h),kid=a<18;
+  openSheet("About BMI",body=>{const p=el("p","section-f");p.style.fontSize="15px";
+    if(kid&&!isParent()){p.textContent="BMI compares weight and height. For kids it changes as you grow, so your doctor checks it at check-ups. The best things you can do: eat 3 good meals, move and play every day, drink water and sleep well. 💪";body.append(p);return}
+    p.textContent=bi.kid?"For ages 2–19, BMI is compared with other kids of the same age and sex (CDC growth charts). "+(bi.pct!=null?"This BMI is at the "+Math.round(bi.pct)+"th percentile.":"")+" Healthy range: 5th to under 85th percentile. Kids shouldn't diet; focus on balanced meals, activity and sleep, and talk with your pediatrician about growth.":
+      "BMI (body mass index) = weight in kg ÷ height in meters². Healthy range: 18.5 to 24.9. It's a quick screen, not a diagnosis. Muscle, age and body shape also matter, so check with your doctor.";
+    body.append(p);const l=el("div","list plain");l.style.marginTop="12px";
+    [["BMI",fmt1(bi.v)],["Height",Math.floor(h.hin/12)+" ft "+Math.round(h.hin%12)+" in"],["Weight",h.lb+" lb"],["Age",Math.floor(a)+" years"]].forEach(([k,v])=>{const c=el("div","cell");c.append(el("span","grow",k),el("span","s",v));l.append(c)});body.append(l)})}
+function openCondPlan(k,id){const T=COND_TIPS[k],who=members[id];
+  openSheet(T.t,body=>{const sec=(e,ttl,arr)=>{body.append(el("div","section-h",e+" "+ttl));const l=el("div","list plain");arr.forEach(x=>{const c=el("div","cell");c.append(el("span","grow",x));l.append(c)});body.append(l)};
+    sec("✅","Eat",T.eat);sec("🚫","Avoid",T.avoid);sec("👀","Watch out",T.watch);
+    if(T.day){const p=planOf(health[id]);body.append(el("div","section-h","🍽️ A sample day"+(p?" (~"+p.cal.toLocaleString()+" cal)":"")));const l=el("div","list plain");
+      MEALT.forEach(m=>{const v=T.day[m.v];if(!v)return;const c=el("div","cell"),g=el("span","grow");g.append(el("span","t",m.e+" "+m.n),el("span","s",v));c.append(g);l.append(c)});body.append(l)}
+    body.append(el("p","section-f","General guidance for "+(who?.name||"you")+", not medical advice. Follow your doctor's or dietitian's plan."))})}
+function openHealthProfile(id){const who=members[id]||me,h={act:"moderate",goal:"keep",cond:[],...(health[id]||{})};const yNow=new Date().getFullYear();
+  openSheet((id===uid?"My":who.name+"'s")+" health",body=>{
+    const sel=(opts,val)=>{const s=el("select","field hsel");opts.forEach(([v,t])=>{const o=el("option","",t);o.value=v;if(String(v)===String(val))o.selected=true;s.append(o)});return s};
+    const lab=t=>el("div","section-h",t);
+    body.append(lab("Born"));const bRow=el("div","hrow");const bm=sel([["","Month"],...Array.from({length:12},(_,i)=>[i+1,new Date(2000,i,1).toLocaleDateString(undefined,{month:"long"})])],h.mo||""),by=sel([["","Year"],...Array.from({length:90},(_,i)=>[yNow-i,yNow-i])],h.yr||"");bRow.append(bm,by);body.append(bRow);
+    body.append(lab("Sex (for the formulas)"));const sx=el("div","seg");[["m","Male"],["f","Female"]].forEach(([v,t])=>{const b=el("button","",t);b.dataset.v=v;b.setAttribute("aria-pressed",(h.sex||"m")===v);b.onclick=()=>sx.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));sx.append(b)});body.append(sx);
+    body.append(lab("Height"));const hr=el("div","hrow");const ft=sel(Array.from({length:5},(_,i)=>[i+3,(i+3)+" ft"]),h.hin?Math.floor(h.hin/12):5),inch=sel(Array.from({length:12},(_,i)=>[i,i+" in"]),h.hin?Math.round(h.hin%12):6);hr.append(ft,inch);body.append(hr);
+    body.append(lab("Weight"));const wl=el("div","list plain"),wc=el("div","cell"),w=el("input","field");w.type="number";w.inputMode="decimal";w.min="20";w.max="600";w.placeholder="Pounds";w.value=h.lb||"";w.setAttribute("aria-label","Weight in pounds");wc.append(w,el("span","s","lb"));wl.append(wc);body.append(wl);
+    body.append(lab("Activity"));const al=el("div","list plain");let act=h.act;ACT.forEach(x=>{const c=el("button","cell tap"),g=el("span","grow");g.append(el("span","t",x.n),el("span","s",x.s));const ck=el("span","hck",x.v===act?"✓":"");c.append(g,ck);
+      c.onclick=()=>{act=x.v;al.querySelectorAll(".hck").forEach(z=>z.textContent="");ck.textContent="✓"};al.append(c)});body.append(al);
+    body.append(lab("Food needs"));const cl=el("div","hchips");const cond=new Set(h.cond||[]);CONDS.forEach(x=>{const b=el("button","hchip");b.setAttribute("aria-pressed",cond.has(x.v));b.title=x.s;b.append(el("span","",x.e+" "+x.n));
+      b.onclick=()=>{cond.has(x.v)?cond.delete(x.v):cond.add(x.v);b.setAttribute("aria-pressed",cond.has(x.v))};cl.append(b)});body.append(cl);
+    const gWrap=el("div");gWrap.append(lab("Goal"));const gs=el("div","lens");let goal=h.goal;GOALS.forEach(x=>{const b=el("button","",x.n);b.setAttribute("aria-pressed",x.v===goal);b.onclick=()=>{goal=x.v;gs.querySelectorAll("button").forEach(z=>z.setAttribute("aria-pressed",z===b))};gs.append(b)});gWrap.append(gs);body.append(gWrap);
+    const kidNote=el("p","section-f","Kids' plans are about growing strong. There's no weight-loss goal for anyone under 18.");body.append(kidNote);
+    const upd=()=>{const y=+by.value,kid=y&&(yNow-y)<18;gWrap.hidden=!!kid;kidNote.hidden=!kid};by.onchange=upd;upd();
+    const err=el("p","error");err.hidden=true;body.append(err);
+    const save=el("button","btn","Save");save.style.marginTop="16px";body.append(save);
+    save.onclick=async()=>{const lb=parseFloat(w.value),yy=+by.value,mm=+bm.value||7;
+      const bad=!yy?"Pick the birth year.":!(lb>=20&&lb<=600)?"Type the weight in pounds.":"";if(bad){err.textContent=bad;err.hidden=false;return}
+      const kid=(yNow-yy)<18;const data={yr:yy,mo:mm,sex:sx.querySelector('[aria-pressed="true"]').dataset.v,hin:(+ft.value)*12+(+inch.value),lb:Math.round(lb*10)/10,act,cond:[...cond],goal:kid?"keep":goal,updatedAt:Date.now(),editedBy:uid};
+      save.disabled=true;try{await C("health").doc(id).set(data);closeSheet();toast("Saved ✓")}catch(e){save.disabled=false;err.textContent="Couldn't save. Try again.";err.hidden=false}}})}
+function foodMatches(q){q=q.trim().toLowerCase();if(!q)return FOODS.slice(0,0);const words=q.split(/\s+/);
+  return FOODS.map(f=>{const hay=(f.n+" "+f.es).toLowerCase();if(!words.every(w=>hay.includes(w)))return null;return{f,s:(f.n.toLowerCase().startsWith(q)?0:1)+(f.es.toLowerCase().includes(q)?0:.5)}}).filter(Boolean).sort((a,b)=>a.s-b.s).slice(0,12).map(x=>x.f)}
+function openAddFood(id){const h=health[id]||{},gf=(h.cond||[]).includes("gluten"),lf=(h.cond||[]).includes("lactose"),nf=(h.cond||[]).includes("nut");
+  const hr=new Date().getHours();let meal=hr<10?"b":hr<15?"l":hr<21?"d":"s",qty=1;
+  openSheet("Add food",body=>{
+    const seg=el("div","seg");MEALT.forEach(m=>{const b=el("button","",m.n);b.setAttribute("aria-pressed",m.v===meal);b.onclick=()=>{meal=m.v;seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))};seg.append(b)});body.append(seg);
+    const q=el("input","field");q.placeholder="Search: rice, eggs, pollo, mangú…";q.setAttribute("aria-label","Search foods");q.style.marginTop="12px";q.autocomplete="off";body.append(q);
+    const qtyRow=el("div","hqty");const minus=el("button","smallround","−"),plus=el("button","smallround","+"),qv=el("b","","1 serving");minus.setAttribute("aria-label","Less");plus.setAttribute("aria-label","More");
+    const setQ=n=>{qty=Math.max(.5,Math.min(10,n));qv.textContent=fmt1(qty)+(qty===1?" serving":" servings")};minus.onclick=()=>setQ(qty-.5);plus.onclick=()=>setQ(qty+.5);qtyRow.append(minus,qv,plus);body.append(qtyRow);
+    const list=el("div","list plain");list.style.marginTop="8px";body.append(list);
+    const extra=el("div");body.append(extra);
+    const add=async(f,est)=>{try{await C("meals").add({by:id,date:hDay||TODAY,meal,n:f.n,c:f.c,p:f.p||0,v:f.v||0,f:f.f||0,g:f.g||0,d:f.d||0,su:f.su||0,fl:f.fl||[],qty,est:!!est,at:Date.now(),addedBy:uid});
+      toast("Added "+f.n);chime([784,988]);closeSheet()}catch(e){toast("Couldn't add it. Try again.")}};
+    const draw=()=>{list.replaceChildren();extra.replaceChildren();const v=q.value.trim(),res=v?foodMatches(v):FOODS.filter(f=>["Egg, 1","White rice, 1 cup","Chicken breast, 4 oz","Banana, medium","Mangú, 1 cup","Milk, 1 cup","Green salad, 2 cups","Stewed beans, 1 cup"].includes(f.n));
+      if(!v)list.append(el("div","section-h","Popular"));
+      res.forEach(f=>{const c=el("button","cell tap"),g=el("span","grow");g.append(el("span","t",f.n),el("span","s",f.c+" cal · "+f.p+" g protein"+(f.es?" · "+f.es.split(" ")[0]:"")));c.append(g);
+        const fl=f.fl||[];if(gf&&fl.includes("gl"))c.append(el("span","hwarn","⚠ gluten"));else if(gf&&fl.includes("oat"))c.append(el("span","hwarn soft","GF oats only"));else if(gf&&fl.includes("chk"))c.append(el("span","hwarn soft","check label"));
+        if(lf&&fl.includes("lac"))c.append(el("span","hwarn soft","lactose"));if(nf&&fl.includes("nut"))c.append(el("span","hwarn","⚠ nuts"));
+        c.onclick=()=>add(f);list.append(c)});
+      if(v){if(!res.length)list.append(el("p","section-f","Not on the list."));
+        const ai=el("button","btn soft","✨ Ask "+GN()+" to count “"+v+"”");ai.style.marginTop="12px";ai.onclick=()=>estimate(v,ai);
+        const man=el("button","btn gray","Type the calories myself");man.style.marginTop="8px";man.onclick=()=>manual(v);extra.append(ai,man)}};
+    const estimate=async(v,btn)=>{if(!sample||!aiOn){toast(GN()+" can't think right now. Type the calories instead.");manual(v);return}
+      btn.disabled=true;btn.textContent="✨ Counting…";
+      try{const r=await sample.json("Estimate nutrition for ONE serving of this food as eaten in a US / Dominican household: \""+v.slice(0,120)+"\". Return JSON: {\"name\": short name with portion, \"cal\": number, \"protein_g\": number, \"veg_cups\": number, \"fruit_cups\": number, \"grain_servings\": number, \"dairy_cups\": number, \"added_sugar_g\": number, \"gluten\": true|false, \"lactose\": true|false}. Use typical USDA values.",{modelTier:"quick",cache:false});
+        const n=x=>Math.max(0,Math.min(5000,+x||0));const f={n:String(r.name||v).slice(0,60),c:Math.round(n(r.cal)),p:Math.round(n(r.protein_g)),v:n(r.veg_cups),f:n(r.fruit_cups),g:n(r.grain_servings),d:n(r.dairy_cups),su:Math.round(n(r.added_sugar_g)),fl:[r.gluten?"gl":"",r.lactose?"lac":""].filter(Boolean)};
+        if(!f.c){throw 0}
+        extra.replaceChildren();const c=el("div","list plain"),cc=el("div","cell"),g=el("span","grow");g.append(el("span","t",f.n),el("span","s","About "+f.c+" cal · "+f.p+" g protein"+(f.fl.includes("gl")?" · contains gluten":"")));cc.append(g);c.append(cc);
+        const ok=el("button","btn","Add it");ok.style.marginTop="10px";ok.onclick=()=>add(f,true);extra.append(el("div","section-h",GN()+"'s estimate"),c,ok)}
+      catch(e){btn.disabled=false;btn.textContent="✨ Try again";toast("Couldn't estimate that one. Type the calories instead.")}};
+    const manual=v=>{extra.replaceChildren();const l=el("div","list plain"),c1=el("div","cell"),nm=el("input","field");nm.value=v;nm.placeholder="Food name";nm.setAttribute("aria-label","Food name");c1.append(nm);
+      const c2=el("div","cell"),cal=el("input","field");cal.type="number";cal.inputMode="numeric";cal.placeholder="Calories";cal.setAttribute("aria-label","Calories");c2.append(cal,el("span","s","cal"));
+      const c3=el("div","cell"),pr=el("input","field");pr.type="number";pr.inputMode="numeric";pr.placeholder="Protein (optional)";pr.setAttribute("aria-label","Protein grams");c3.append(pr,el("span","s","g"));l.append(c1,c2,c3);
+      const ok=el("button","btn","Add");ok.style.marginTop="10px";ok.onclick=()=>{const c=Math.round(+cal.value);if(!nm.value.trim()||!(c>=0&&c<5000)){toast("Type a name and calories.");return}add({n:nm.value.trim().slice(0,60),c,p:Math.round(+pr.value||0)})};
+      extra.append(el("div","section-h","Your own food"),l,ok);cal.focus()};
+    q.oninput=draw;draw();setTimeout(()=>q.focus(),50)})}
+async function askCocoPlan(id){const h=health[id],who=members[id]||me,p=planOf(h);if(!p)return;
+  openSheet(GN()+"'s meal plan",async body=>{const out=el("div","htip");out.style.whiteSpace="pre-wrap";out.textContent="✨ Thinking about "+(id===uid?"you":who.name)+"…";body.append(out);
+    if(!sample||!aiOn){const k=(h.cond||[]).includes("gluten")?"gluten":ageOf(h)<18?"kid":null;out.textContent=k&&COND_TIPS[k].day?"Here's a sample day:\n\n"+MEALT.map(m=>COND_TIPS[k].day[m.v]?m.e+" "+m.n+": "+COND_TIPS[k].day[m.v]:"").filter(Boolean).join("\n"):GN()+" can't think right now. Check the daily plan and tips on the Health page.";return}
+    const conds=(h.cond||[]).map(c=>CONDS.find(x=>x.v===c)?.s).filter(Boolean).join(", ")||"none";
+    try{const r=await sample("You are "+GN()+", a warm family health helper for the Espinal family (Dominican-American, Florida). Make a simple one-day meal plan for "+who.name+", age "+Math.floor(ageOf(h))+", about "+p.cal+" calories, protein about "+p.pLo+" g. Food needs: "+conds+". Follow the Dietary Guidelines for Americans 2025–2030 (protein at every meal, vegetables and fruit, whole unprocessed foods, limit added sugar). Include Dominican home foods where they fit. "+((h.cond||[]).includes("gluten")?"Everything must be gluten-free; name any label checks. ":"")+(ageOf(h)<18?"This is a child: no dieting or weight talk; focus on growing strong. ":"")+"Format: Breakfast, Lunch, Snack, Dinner, each one line with rough calories, then one short tip. Plain text, no markdown, under 130 words.",{modelTier:"quick"});
+      out.textContent=r.text.replace(/\*\*/g,"")}catch(e){out.textContent="Couldn't make a plan right now. Try again later."}})}
+
+
+function renderAll(){if(!me)return;renderHealth();renderJourneyLib();renderToday();renderFive();renderWisdom();renderLive();renderChat();renderTasks();renderFamily();renderCalmBoard();renderBell()}
 
 /* boot */
 renderPresets();setLen(5);
@@ -2257,6 +2560,8 @@ uid=load("fh-uid");setAI(false);$("#aiStatus").textContent="Kindness helper star
   C("checkins").where("date","==",TODAY).onSnapshot(s=>{checkins=s.docs.map(d=>({id:d.id,...d.data()}));rerender()},fail);
   C("sessions").where("date",">=",WINDOW).onSnapshot(s=>{sessions=s.docs.map(d=>({id:d.id,...d.data()}));rerender()},fail);
   C("checkups").orderBy("at").limit(500).onSnapshot(s=>{checkups=s.docs.map(d=>({id:d.id,...d.data()}));if(me){renderFive();renderFamily()}},fail);
+  C("health").onSnapshot(s=>{health={};s.docs.forEach(d=>health[d.id]=d.data());if(me)renderHealth()},fail);
+  C("meals").where("date",">=",WEEK).onSnapshot(s=>{meals=s.docs.map(d=>({id:d.id,...d.data()}));if(me)renderHealth()},fail);
   C("fivefold").where("date",">=",WEEK).onSnapshot(s=>{fivefold=s.docs.map(d=>({id:d.id,...d.data()}));if(me){renderFive();renderToday()}},fail);
   C("live").doc("now").onSnapshot(s=>{const was=live;live=s.exists?s.data():null;
     if(me){renderLive();renderBell();if(liveActive()&&live.by!==uid&&(!was||was.startAt!==live.startAt)&&!running){chime([523,784]);toast("🧘 "+(members[live.by]?.name||"Someone")+" started a family meditation. Tap Join!")}}},fail);
