@@ -485,6 +485,27 @@ input.field,textarea.field,.inrow textarea{background:rgba(8,12,34,.75);border:1
 .hqty b{min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
 .tabbar button{min-width:0}
 body:has(#sheetRoot .sheet) .nova-fab{display:none}
+body:has(#sheetRoot .sheet) .cocopop{display:none}
+.cocopop{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));width:min(528px,calc(100% - 24px));z-index:40;display:flex;gap:12px;align-items:flex-start;padding:14px 14px 14px 16px;border-radius:20px;background:rgba(10,14,40,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 0 0 1px rgba(62,240,255,.45),0 12px 40px rgba(0,0,0,.55);animation:popin .35s ease-out}
+.cocopop .nova-orb{flex:none;width:40px;height:40px}
+.cocopop b{font-family:var(--display);letter-spacing:.06em;font-size:13px;color:var(--tint);text-transform:uppercase}
+.cocopop p{margin:3px 0 10px;font-size:16px;line-height:1.35}
+.cocopop .row{display:flex;gap:8px;flex-wrap:wrap}
+.cocopop .x{flex:none;width:28px;height:28px;border-radius:50%;background:var(--fill);color:var(--label-2);font-size:13px}
+@keyframes popin{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
+.ftiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ftile{background:var(--card);border-radius:16px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.ftile .e{font-size:26px}.ftile b{font-size:16px}.ftile .s{font-size:12px;color:var(--label-2)}
+.qcard{background:var(--card);border-radius:20px;padding:18px;margin-top:12px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.qcard .k{font-size:12px;color:var(--tint);letter-spacing:.08em;font-weight:600;font-family:var(--mono)}
+.qcard>b{font-size:19px;line-height:1.3}.qcard .big{font-size:56px;text-align:center}.qcard .big+b{text-align:center;font-size:22px}.qcard p{margin:0;color:var(--label-2);font-size:15px}
+.qcard .big2{font-size:24px;line-height:1.3;font-family:var(--display)}
+.qcard.talk{min-height:180px;justify-content:center;background:linear-gradient(135deg,rgba(62,240,255,.12),rgba(165,139,255,.16))}
+.qopts{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.qopt{background:var(--card-2);border-radius:12px;padding:12px 14px;text-align:left;font-size:16px}
+.qopt.ok{background:color-mix(in srgb,var(--green) 26%,transparent);box-shadow:inset 0 0 0 1.5px var(--green)}
+.qopt.no{background:color-mix(in srgb,var(--red) 22%,transparent);box-shadow:inset 0 0 0 1.5px var(--red)}
+.qex{font-size:15px!important;color:var(--label)!important}
 .hsnap{width:100%;text-align:left;display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px 16px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,rgba(62,240,255,.16),rgba(165,139,255,.18));box-shadow:inset 0 0 0 1px rgba(62,240,255,.35)}
 .hsnap .ic{font-size:30px}.hsnap b{display:block;font-size:17px}.hsnap .grow span{font-size:14px;color:var(--label-2)}
 .hsnapimg{display:block;width:100%;max-height:260px;object-fit:cover;border-radius:16px;margin-top:4px}
@@ -551,12 +572,15 @@ body:has(#sheetRoot .sheet) .nova-fab{display:none}
       <div id="liveTodaySlot"></div>
       <div class="section-h">Five-Fold Life today</div>
       <div class="five" id="fiveCard"></div>
+      <div class="section-h">Family time</div>
+      <div class="ftiles" id="famTime"></div>
       <div class="section-h">Principle of the week</div>
       <button class="wisdom" id="weekPrinciple"></button>
       <div class="section-h">How are you feeling?</div>
       <div class="moodrow" id="moodRow"></div>
       <div class="section-h">Up next for you</div>
       <div class="list" id="upNext"></div>
+      <div id="remBox"></div>
       <div class="section-h">The family today</div>
       <div class="list"><div class="famrow" id="famRow"></div></div>
     </section>
@@ -830,7 +854,8 @@ $("#createGo").onclick=async()=>{
 };
 
 /* app shell */
-function enterApp(){show("#appView");goTab(currentTab);renderAll()}
+function enterApp(){show("#appView");goTab(currentTab);renderAll();clearTimeout(enterApp.t);enterApp.t=setTimeout(()=>{maybeCheckin();checkReminders()},2500)}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&me){checkReminders();setTimeout(maybeCheckin,1200)}});
 document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>goTab(b.dataset.go));
 function goTab(t){currentTab=t;
   document.querySelectorAll("[data-go]").forEach(x=>x.setAttribute("aria-selected",x.dataset.go===t));
@@ -1991,7 +2016,7 @@ You are talking with ${me.name}, a ${me.role==="kid"?"kid in the family. Use sho
 Ground everything in practical action for today: one small next step is better than a long speech. Keep replies under 90 words unless asked for more. Reply in the language they write in (English or Spanish).
 Use your tools: check get_family_status before talking about anyone's progress, never invent facts about the family. When someone wants to meditate, breathe, relax, sleep or focus, offer to start it and use start_meditation (set together=true when they want the family to join). Use open_five_fold for a specific area, open_checkup for the test, add_task only for parents, and draft_family_message to help someone write to the family (they review and send it themselves).
 Chakras, the third eye, binaural beats and Hermetic ideas are spiritual traditions the family values: share them respectfully, without claiming they are medically or scientifically proven.
-Safety: you are not a doctor or therapist. If anyone says they feel very sad, scared, hurt, unsafe, or might hurt themselves, respond with care, encourage them to talk to Mom or Dad or another trusted adult right now, and say that in the US they can call or text 988 any time. Never keep secrets from the parents about safety.`;
+Safety: you are not a doctor or therapist. If anyone says they feel very sad, scared, hurt, unsafe, or might hurt themselves, respond with care, encourage them to talk to Mom or Dad or another trusted adult right now, and say that in the US they can call or text 988 any time. Never keep secrets from the parents about safety.`+COCO_RULES2;
 }
 const NOVA_TOOLS=()=>[
   {name:"get_family_status",description:"Today's real progress for everyone: tasks done, Five-Fold areas, moods, streaks, calm minutes, check-up levels, this week's Hermetic principle and any live family meditation. Returns JSON.",
@@ -2025,13 +2050,14 @@ const NOVA_TOOLS=()=>[
      novaAct("✓ Task added: "+inp.title);return"Added"}},
   {name:"draft_family_message",description:"Puts a message into the family chat box so the person can review and send it themselves. Use when they want help saying something to the family.",
    inputSchema:{type:"object",properties:{text:{type:"string"}},required:["text"]},
-   execute:(inp)=>{draft.value=String(inp.text).slice(0,2000);draft.dispatchEvent(new Event("input"));setTimeout(()=>{closeNova();goTab("chat");draft.focus()},1800);return"Draft placed in the chat box for them to review and send"}}
+   execute:(inp)=>{draft.value=String(inp.text).slice(0,2000);draft.dispatchEvent(new Event("input"));setTimeout(()=>{closeNova();goTab("chat");draft.focus()},1800);return"Draft placed in the chat box for them to review and send"}},
+  ...COCO_TOOLS2()
 ];
 
 function novaChips(){
   const box=$("#novaChips");box.replaceChildren();
-  const chips=me.role==="kid"?["What should I do today?","Breathe with me","Help me calm down","Meditate with my family","Tell me about my chakras","How am I doing?"]
-    :["How is the family doing today?","Start a family meditation","Ideas for tonight's dinner talk","Help me encourage the boys","Plan our Five-Fold week","Explain this week's principle"];
+  const chips=me.role==="kid"?["I ate cereal and a banana","Family quiz!","Remind me to read at 7pm","What should I do today?","Breathe with me","Help me calm down","Meditate with my family","Tell me about my chakras","How am I doing?"]
+    :["How is my eating today?","Log: rice, beans and chicken for lunch","Remind me to drink water at 3pm","Dinner talk question","How is the family doing today?","Start a family meditation","Ideas for tonight's dinner talk","Help me encourage the boys","Plan our Five-Fold week","Explain this week's principle"];
   chips.forEach(t=>{const b=el("button","",t);b.onclick=()=>novaSend(t);box.append(b)});
 }
 function novaMsg(role,text){const r=el("div","nm "+role),tx=el("div","tx",text);if(role==="ai")r.append(Object.assign(el("span","nova-orb mini"),{innerHTML:"<i></i><i></i>"}));r.append(tx);$("#novaMsgs").append(r);$("#novaMsgs").scrollTop=1e9;return tx}
@@ -2064,7 +2090,7 @@ async function novaSend(text,o){const talk=!!(o&&o.talk);
   if(novaHasTools===null){try{novaHasTools=!!(await sample.limits()).tools}catch(e){novaHasTools=false}}
   try{
     const opts={modelTier:"quick",signal:novaCtl.signal,onText:({text})=>{out.textContent=text;$("#novaMsgs").scrollTop=1e9;if(talk){$("#tWho").textContent=GN();$("#tText").textContent=text}}};
-    if(novaHasTools)opts.tools=NOVA_TOOLS().map(t=>({...t,execute:async(i)=>{const r=await t.execute(i||{});if(t.name!=="get_family_status")novaAct("⟡ "+(typeof r==="string"?r:"done"));return r}}));else opts.cache=false;
+    if(novaHasTools)opts.tools=NOVA_TOOLS().map(t=>({...t,execute:async(i)=>{const r=await t.execute(i||{});if(!["get_family_status","get_health_today","search_foods","list_reminders","log_food","add_reminder","add_task"].includes(t.name))novaAct("⟡ "+(typeof r==="string"?r:"done"));return r}}));else opts.cache=false;
     const talkNote=talk?"\nRight now you are on a live video call: your words are spoken out loud by your animated face. Answer in 1 to 3 short, warm spoken sentences, no lists, no markdown, at most one emoji."+(T.lang.startsWith("es")?" Speak Spanish (Dominican-friendly, simple words).":""):"";
     const {text:reply}=await sample([{role:"user",content:novaRules()+talkNote+"\n\n(Standing instructions above. The conversation with "+me.name+" follows.)"},...novaTurns],opts);
     const clean=reply;out.textContent=clean.trim();
@@ -2265,7 +2291,7 @@ $("#resetBtn").onclick=async()=>{
   const b=$("#resetBtn"),lab=b.querySelector(".grow");
   if(b.dataset.sure!=="1"){b.dataset.sure="1";lab.textContent="Tap again to erase everything";setTimeout(()=>{b.dataset.sure="";lab.textContent="Reset all test data"},4000);return}
   lab.textContent="Clearing…";b.disabled=true;
-  try{for(const n of ["messages","tasks","done","checkins","sessions","fivefold","checkups","live","health","meals","members"]){const s=await C(n).get();for(const d of s.docs)await C(n).doc(d.id).delete()}
+  try{for(const n of ["messages","tasks","done","checkins","sessions","fivefold","checkups","live","health","meals","reminders","gratitude","quiz","quizday","members"]){const s=await C(n).get();for(const d of s.docs)await C(n).doc(d.id).delete()}
     await C("family").doc("main").delete();halt();inLive=null;uid=null;store("fh-uid",null);currentTab="today";toast("Test data cleared")}
   catch(e){toast("Couldn't clear everything. Try again.")}
   b.disabled=false;b.dataset.sure="";lab.textContent="Reset all test data";
@@ -2596,7 +2622,195 @@ async function askCocoPlan(id){const h=health[id],who=members[id]||me,p=planOf(h
       out.textContent=r.text.replace(/\*\*/g,"")}catch(e){out.textContent="Couldn't make a plan right now. Try again later."}})}
 
 
-function renderAll(){if(!me)return;renderHealth();renderJourneyLib();renderToday();renderFive();renderWisdom();renderLive();renderChat();renderTasks();renderFamily();renderCalmBoard();renderBell()}
+/* COCO 2 */
+/* ================= COCO 2: health helper tools, check-ins, family games, reminders ================= */
+let reminders=[],gratitude=[],quizDocs=[],quizDay=null;
+const personByName=n=>{const s=String(n||"").trim().toLowerCase();if(!s||/^(me|myself|yo|i)$/.test(s))return me;return memberList().find(m=>m.name.toLowerCase()===s)||memberList().find(m=>m.name.toLowerCase().startsWith(s))||null};
+function healthTarget(name){const m=personByName(name);if(!m)throw new Error("No family member named "+name);if(!isParent()&&m.id!==uid)throw new Error("Kids can only see their own health page");return m}
+const MEAL_KEYS={breakfast:"b",lunch:"l",dinner:"d",snack:"s",snacks:"s"};
+const mealNow=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":h<21?"d":"s"};
+
+/* ---------- reminders ---------- */
+const hhmm=d=>pad(d.getHours())+":"+pad(d.getMinutes());
+const fmtHM=t=>{const [h,m]=String(t).split(":").map(Number);const d=new Date();d.setHours(h,m,0,0);return d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})};
+const remFor=id=>reminders.filter(r=>r.for===id||r.for==="all");
+function remToday(r){if(r.repeat==="once")return r.date===TODAY;const wd=new Date().getDay();if(r.repeat==="weekdays")return wd>0&&wd<6;if(r.repeat==="weekends")return wd===0||wd===6;return true}
+function remLabel(r){return(r.repeat==="once"?(r.date===TODAY?"Today":new Date(r.date+"T12:00").toLocaleDateString(undefined,{month:"short",day:"numeric"})):r.repeat==="weekdays"?"Weekdays":r.repeat==="weekends"?"Weekends":"Every day")+" · "+fmtHM(r.time)}
+async function addReminder({text,time,forId,repeat,date}){
+  if(!/^\d{2}:\d{2}$/.test(time))throw new Error("Time must look like 15:30");
+  if(!isParent()&&forId!==uid)throw new Error("Kids can only set reminders for themselves");
+  const rp=["daily","weekdays","weekends","once"].includes(repeat)?repeat:"daily";
+  let d=date;if(rp==="once"&&!d){d=TODAY;if(time<=hhmm(new Date()))d=daysAgo(-1)}
+  await C("reminders").add({text:String(text).slice(0,80),time,for:forId,repeat:rp,date:rp==="once"?d:null,by:uid,createdAt:Date.now()});
+  askNotify();
+}
+function askNotify(){try{if(window.COCO_SITE&&"Notification"in window&&Notification.permission==="default")Notification.requestPermission()}catch(e){}}
+function notifyOS(title,body){try{if(!window.COCO_SITE||!("Notification"in window)||Notification.permission!=="granted")return;
+  if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,icon:"icons/icon-192.png",tag:"coco-"+Date.now()})).catch(()=>{try{new Notification(title,{body})}catch(e){}});
+  else new Notification(title,{body})}catch(e){}}
+function checkReminders(){if(!me)return;const now=new Date(),cur=hhmm(now),ago=hhmm(new Date(now-3*60000));
+  remFor(uid).filter(remToday).forEach(r=>{if(r.time>cur||r.time<ago)return;const k="fh-rem-"+r.id+"-"+TODAY;if(load(k))return;store(k,"1");
+    chime([880,1175,1568]);cocoPop("⏰ "+r.text,[["Done ✓",()=>{if(r.repeat==="once")C("reminders").doc(r.id).delete().catch(()=>{})}]],{sticky:true,speak:true});notifyOS(GN()+" reminder",r.text)})}
+setInterval(checkReminders,20000);
+function renderReminders(){const box=$("#remBox");if(!box||!me)return;box.replaceChildren();
+  const mine=remFor(uid).slice().sort((a,b)=>a.time<b.time?-1:1),others=isParent()?reminders.filter(r=>r.for!==uid&&r.for!=="all"):[];
+  const head=el("div","navrow");head.style.margin="22px 4px 7px";const h=el("span","section-h","⏰ Reminders");h.style.margin="0";const add=el("button","linkbtn","Add");add.onclick=()=>openReminderSheet();head.append(h,add);box.append(head);
+  const l=el("div","list");const row=r=>{const c=el("div","cell"),g=el("span","grow"),who=r.for==="all"?"Everyone":members[r.for]?.name||"";g.append(el("span","t",r.text),el("span","s",remLabel(r)+(r.for!==uid?" · "+who:"")));c.append(el("span","hic","⏰"),g);
+    if(isParent()||r.by===uid||r.for===uid){const d=el("button","del","Delete");d.onclick=()=>C("reminders").doc(r.id).delete().catch(()=>toast("Couldn't delete it."));c.append(d)}l.append(c)};
+  [...mine,...others].forEach(row);if(!mine.length&&!others.length)l.append(emptyBox("⏰","No reminders yet","Tap Add, or tell "+GN()+": “remind me to drink water at 3”."));box.append(l);
+  if(mine.length||others.length)box.append(el("p","section-f",window.COCO_SITE?"Reminders pop up while the app is open on this device.":"Reminders pop up while the app is open."))}
+function openReminderSheet(){openSheet("New reminder",body=>{
+  const t=el("input","field");t.placeholder="What to remember? e.g. Drink water";t.maxLength=80;t.setAttribute("aria-label","Reminder");body.append(t);
+  const tl=el("div","list plain");tl.style.marginTop="10px";const tc=el("div","cell"),tm=el("input","field");tm.type="time";const d=new Date(Date.now()+3600000);tm.value=pad(d.getHours())+":00";tm.setAttribute("aria-label","Time");tc.append(el("span","grow","Time"),tm);tl.append(tc);body.append(tl);
+  body.append(el("div","section-h","Repeat"));let rep="daily";const rs=el("div","seg");[["daily","Every day"],["weekdays","Weekdays"],["once","Once"]].forEach(([v,n])=>{const b=el("button","",n);b.setAttribute("aria-pressed",v===rep);b.onclick=()=>{rep=v;rs.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))};rs.append(b)});body.append(rs);
+  let forId=uid;if(isParent()){body.append(el("div","section-h","For"));const fs=el("div","lens");[["all","Everyone"],...memberList().map(m=>[m.id,m.name])].forEach(([v,n])=>{const b=el("button","",n);b.setAttribute("aria-pressed",v===forId);b.onclick=()=>{forId=v;fs.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))};fs.append(b)});body.append(fs)}
+  const go=el("button","btn","Save reminder");go.style.marginTop="16px";body.append(go);
+  go.onclick=async()=>{if(!t.value.trim()){toast("Type what to remember.");return}go.disabled=true;try{await addReminder({text:t.value.trim(),time:tm.value,forId,repeat:rep});closeSheet();toast("⏰ Reminder set for "+fmtHM(tm.value))}catch(e){go.disabled=false;toast(e.message||"Couldn't save.")}};
+  setTimeout(()=>t.focus(),50)})}
+
+/* ---------- Coco pop-up bubble (check-ins + reminders) ---------- */
+function cocoPop(text,actions,o){o=o||{};const old=$("#cocoPop");old&&old.remove();if(!$("#player").hidden||!$("#talk").hidden)return;
+  const p=el("div","cocopop");p.id="cocoPop";p.setAttribute("role","status");const orb=el("span","nova-orb mini");orb.innerHTML="<i></i><i></i>";
+  const g=el("div","grow");g.append(el("b","",GN()),el("p","",text));const row=el("div","row");
+  (actions||[]).forEach(([n,f],i)=>{const b=el("button","btn sm"+(i?" gray":""),n);b.onclick=()=>{p.remove();f()};row.append(b)});
+  const talk=el("button","btn sm gray","💬");talk.setAttribute("aria-label","Talk to "+GN());talk.onclick=()=>{p.remove();openNova()};row.append(talk);
+  g.append(row);const x=el("button","x","✕");x.setAttribute("aria-label","Dismiss");x.onclick=()=>p.remove();p.append(orb,g,x);document.body.append(p);
+  if(o.speak&&window.COCO_SITE&&typeof say==="function"&&VOICEPREF?.mode!=="off")try{say(text.replace(/^[^\w¡¿]+/u,""),{})}catch(e){}
+  if(!o.sticky)setTimeout(()=>p.isConnected&&p.remove(),14000)}
+function checkinMessage(){const h=new Date().getHours(),slot=h<11?"am":h<17?"mid":"pm",key="fh-pop-"+uid+"-"+TODAY+"-"+slot;if(load(key))return null;
+  const kid=me.role==="kid",name=me.name,pr=todayProgress(uid),left=pr.total-pr.done,mood=checkins.some(c=>c.id===TODAY+"_"+uid),hp=health[uid],plan=hp?planOf(hp):null,t=totals(mealsOn(uid,TODAY));
+  const next=remFor(uid).filter(remToday).filter(r=>r.time>hhmm(new Date())).sort((a,b)=>a.time<b.time?-1:1)[0];
+  const opts=[];
+  if(liveActive())opts.push(["🧘 The family is meditating right now. Come join us!",[["Join",joinLive]]]);
+  if(!mood)opts.push([(slot==="am"?"Good morning, ":"Hi, ")+name+"! How are you feeling today?",[["Check in",()=>{goTab("today");setTimeout(()=>$("#moodRow")?.scrollIntoView({behavior:"smooth",block:"center"}),200)}]]]);
+  if(slot==="am"&&plan&&t.c===0)opts.push(["🌅 Breakfast is fuel"+(kid?" for your brain":"")+"! Snap a photo of it and I'll count it.",[["Add breakfast",()=>{goTab("health");openAddFood(uid)}]]]);
+  if(slot!=="am"&&plan&&t.c>0&&t.f===0)opts.push(["🍌 No fruit yet today. Papaya, banana or berries would be perfect.",[["Log fruit",()=>{goTab("health");openAddFood(uid)}]]]);
+  if(slot==="pm"&&plan&&t.c>0&&t.p<plan.pLo*.6)opts.push(["🍗 Protein is low today ("+Math.round(t.p)+" of "+plan.pLo+" g). Eggs, beans, chicken or Greek yogurt can help.",[["See today",()=>goTab("health")]]]);
+  if(left>0)opts.push(["✅ "+left+" task"+(left===1?"":"s")+" left today"+(kid?". You've got this!":"."),[["See tasks",()=>goTab("tasks")]]]);
+  if(next)opts.push(["⏰ Coming up at "+fmtHM(next.time)+": "+next.text,[]]);
+  if(slot==="pm")opts.push(["🍽️ Dinner time is family time. Want a fun question to talk about?",[["Dinner talk",()=>openGames("talk")],["Gratitude",()=>openGames("grat")]]]);
+  if(!quizDocs.some(q=>q.id===TODAY+"_"+uid))opts.push(["🎲 Today's family quiz is ready. Can you beat everyone?",[["Play",()=>openGames("quiz")]]]);
+  const st=streakOf(uid);if(st>=3)opts.push(["🔥 "+st+"-day streak, "+name+"! I'm proud of you.",[]]);
+  if(!opts.length)return null;store(key,"1");return opts[0]}
+function maybeCheckin(){if(!me||!loaded.family)return;const m=checkinMessage();if(m)cocoPop(m[0],m[1])}
+
+/* ---------- family games ---------- */
+const TALK=[["What made you smile today?","¿Qué te hizo sonreír hoy?"],["If our family had a superpower, what would it be?","Si nuestra familia tuviera un superpoder, ¿cuál sería?"],
+ ["What's something hard you did this week?","¿Qué cosa difícil hiciste esta semana?"],["Who helped you today, and how?","¿Quién te ayudó hoy y cómo?"],["What's one thing you want to learn this year?","¿Qué quieres aprender este año?"],
+ ["If you could visit any place in the Dominican Republic, where would you go?","Si pudieras visitar cualquier lugar de la República Dominicana, ¿a dónde irías?"],["What's your favorite family memory?","¿Cuál es tu recuerdo favorito en familia?"],
+ ["What would you do with one extra hour every day?","¿Qué harías con una hora extra cada día?"],["What kind thing could you do for someone tomorrow?","¿Qué cosa buena podrías hacer por alguien mañana?"],
+ ["Which Five-Fold area did you grow in today?","¿En qué área de la vida de cinco partes creciste hoy?"],["What do you appreciate about the person on your left?","¿Qué aprecias de la persona a tu izquierda?"],
+ ["If you were the parent for a day, what would you change?","Si fueras el papá o la mamá por un día, ¿qué cambiarías?"],["What's the funniest thing that happened this week?","¿Qué fue lo más gracioso que pasó esta semana?"],
+ ["What's a mistake that taught you something?","¿Qué error te enseñó algo?"],["What helps you feel calm?","¿Qué te ayuda a sentirte en calma?"],["If you could invent a holiday, what would it celebrate?","Si pudieras inventar un día festivo, ¿qué celebraría?"],
+ ["What's one thing our family does really well?","¿Qué hace muy bien nuestra familia?"],["What's your dream job, and why?","¿Cuál es el trabajo de tus sueños y por qué?"],["What song fits your day today?","¿Qué canción va con tu día de hoy?"],
+ ["Did you notice one of the Hermetic principles today?","¿Notaste hoy alguno de los principios herméticos?"],["What should we do together this weekend?","¿Qué deberíamos hacer juntos este fin de semana?"],
+ ["Who is someone you admire, and why?","¿A quién admiras y por qué?"],["What's your favorite Dominican dish, and who makes it best?","¿Cuál es tu comida dominicana favorita y quién la hace mejor?"],
+ ["What's something new you tried recently?","¿Qué cosa nueva probaste hace poco?"],["How can we help each other more at home?","¿Cómo podemos ayudarnos más en la casa?"],["What are you proud of this week?","¿De qué estás orgulloso esta semana?"]];
+const QUIZ=[["How many cups of vegetables a day do the new guidelines suggest on a 2,000-calorie day?",["1","2","3","5"],2,"About 3 cups, more or less depending on your energy needs."],
+ ["Which of these is naturally gluten-free?",["Bread","Mangú","Pasta","Empanada"],1,"Mangú is made from green plantains, no wheat!"],["What's the best everyday drink for your body?",["Soda","Water","Juice drink","Sports drink"],1,"Water is the guidelines' drink of choice."],
+ ["Which Hermetic principle says “Nothing rests; everything moves; everything vibrates”?",["Vibration","Polarity","Gender","Rhythm"],0,"That's the Principle of Vibration."],["“As above, so below” is the principle of…",["Mentalism","Correspondence","Rhythm","Cause and Effect"],1,"Correspondence: patterns repeat at every level."],
+ ["Which principle says “The All is Mind”?",["Polarity","Gender","Mentalism","Vibration"],2,"Mentalism, the first principle."],["Which principle says every cause has its effect?",["Rhythm","Cause and Effect","Correspondence","Polarity"],1,"Cause and Effect: our actions shape what happens."],
+ ["The Five-Fold Life: Spiritual, Mental, Physical, Social and…",["Musical","Financial","Digital","Political"],1,"Financial: taking care of money wisely."],["Which chakra is at the top of the head?",["Root","Heart","Crown","Throat"],2,"The Crown chakra."],
+ ["Which chakra is linked with the color green?",["Heart","Root","Throat","Sacral"],0,"The Heart chakra is green."],["Where is the third eye chakra?",["Belly button","Between the eyebrows","Throat","Base of the spine"],1,"Between the eyebrows."],
+ ["How many hours of sleep do teens (13–18) need each night?",["5–6","7","8–10","12–14"],2,"Teens need about 8 to 10 hours."],["Which has the most protein?",["1 cup rice","4 oz chicken breast","1 apple","1 slice bread"],1,"Chicken breast has about 35 grams!"],
+ ["About how many teaspoons of sugar are in one 12-oz soda?",["2","5","10","20"],2,"About 39 grams, close to 10 teaspoons."],["What do you need for binaural beats to work?",["Headphones","A big speaker","Bright lights","Nothing"],0,"Each ear needs to hear its own tone."],
+ ["Breathing out slowly usually makes your body…",["Calm down","Speed up","Get hungry","Feel cold"],0,"Slow out-breaths help the body relax."],["What's the capital of the Dominican Republic?",["Santiago","Punta Cana","Santo Domingo","La Romana"],2,"Santo Domingo, the oldest European city in the Americas."],
+ ["What's Dominican “La Bandera”?",["Rice, beans and meat","Mangú with eggs","Sancocho","Tostones"],0,"Rice, beans and meat, the national lunch."],["When is Dominican Independence Day?",["February 27","July 4","September 16","November 6"],0,"February 27, 1844."],
+ ["In the DR, what fruit is called “lechosa”?",["Mango","Papaya","Guava","Passion fruit"],1,"Lechosa is papaya."],["What's the best first step when you disagree with someone?",["Yell louder","Listen first, then speak calmly","Walk away forever","Stop talking to them"],1,"Listening first helps everyone feel heard."],
+ ["If you save $5 every week, how much do you have after one year?",["$52","$100","$260","$520"],2,"52 weeks × $5 = $260."],["What is a budget?",["A kind of bank","A plan for spending and saving money","A credit card","A tax"],1,"A budget is a money plan."],
+ ["Which helps your brain learn best?",["Good sleep","Skipping breakfast","Screens all night","Soda"],0,"Sleep helps your brain store what you learned."],["How many minutes should kids and teens be active every day?",["15","30","60","180"],2,"At least 60 minutes a day."],
+ ["Which one is a whole grain?",["Brown rice","White bread","Donut","Cookie"],0,"Brown rice keeps the whole grain."],["Which vitamin does sunlight help your body make?",["Vitamin C","Vitamin D","Vitamin A","Vitamin K"],1,"Vitamin D, important for bones."],
+ ["The principle of Rhythm says…",["Everything rises and falls, like tides","Nothing ever changes","Music is magic","Only mind is real"],0,"Everything flows out and in, like a pendulum."],["The principle of Polarity says opposites (hot and cold) are…",["Totally unrelated","Two ends of the same thing","Always bad","Imaginary"],1,"Opposites are the same thing in different degrees."],
+ ["Which food has calcium for strong bones?",["Yogurt","Soda","Chips","Candy"],0,"Yogurt, milk and cheese have calcium."]];
+function seeded(seed){let x=0;for(const c of seed)x=(x*31+c.charCodeAt(0))>>>0;return()=>{x=(x*1664525+1013904223)>>>0;return x/4294967296}}
+function quizFor(day){if(quizDay&&quizDay.date===day&&Array.isArray(quizDay.qs))return quizDay.qs;const r=seeded(day+"q");const idx=QUIZ.map((_,i)=>i).sort(()=>r()-.5).slice(0,5);return idx.map(i=>({q:QUIZ[i][0],o:QUIZ[i][1],a:QUIZ[i][2],e:QUIZ[i][3]}))}
+function openGames(tab){tab=tab||"quiz";
+  openSheet("Family time",body=>{const seg=el("div","seg");const pane=el("div");
+    [["quiz","🎲 Quiz"],["grat","🙏 Gratitude"],["talk","🍽️ Dinner talk"]].forEach(([v,n])=>{const b=el("button","",n);b.setAttribute("aria-pressed",v===tab);b.onclick=()=>{tab=v;seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));draw()};seg.append(b)});
+    body.append(seg,pane);
+    const draw=()=>{openGames.tab=tab;pane.replaceChildren();if(tab==="quiz")drawQuiz(pane);else if(tab==="grat")drawGrat(pane);else drawTalk(pane)};draw();openGames.redraw=()=>{if(pane.isConnected)draw()}})}
+function drawQuiz(pane){const qs=quizFor(TODAY),mine=quizDocs.find(d=>d.id===TODAY+"_"+uid);
+  const board=()=>{const l=el("div","list plain");l.style.marginTop="10px";const rows=memberList().map(m=>({m,d:quizDocs.find(x=>x.id===TODAY+"_"+m.id)})).sort((a,b)=>(b.d?.score??-1)-(a.d?.score??-1));
+    rows.forEach(({m,d},i)=>{const c=el("div","cell"),g=el("span","grow");g.append(el("span","t",(d&&i===0&&d.score>0?"🏆 ":"")+m.name),el("span","s",d?d.score+" of "+qs.length+" right":"Hasn't played yet"));c.append(av(m,"sm"),g);l.append(c)});return l};
+  if(mine){pane.append(el("div","section-h","Today's scores"),board());const p=el("p","section-f","Come back tomorrow for a new quiz! "+(quizDay?.by?"Today's questions were made by "+GN()+".":""));pane.append(p);
+    if(isParent()&&!quizDay)pane.append(makeQuizBtn());return}
+  let i=0,score=0;const ans=[];const card=el("div","qcard");pane.append(card);
+  const step=()=>{card.replaceChildren();if(i>=qs.length){C("quiz").doc(TODAY+"_"+uid).set({by:uid,date:TODAY,score,answers:ans,at:Date.now()}).catch(()=>toast("Couldn't save your score."));
+      card.append(el("div","big",score===qs.length?"🏆":score>=qs.length/2?"⭐":"🌱"),el("b","",score+" of "+qs.length+" right!"),el("p","",score===qs.length?"Perfect score!":"Nice work. Learning is the point!"));if(score===qs.length)confetti(true);chime([660,880,1320]);return}
+    const q=qs[i];card.append(el("span","k","Question "+(i+1)+" of "+qs.length),el("b","",q.q));const opts=el("div","qopts");
+    q.o.forEach((o,k)=>{const b=el("button","qopt",o);b.onclick=()=>{opts.querySelectorAll("button").forEach(x=>x.disabled=true);const ok=k===q.a;if(ok){score++;chime([880,1320])}b.classList.add(ok?"ok":"no");opts.children[q.a].classList.add("ok");ans.push(k);
+      const ex=el("p","qex",(ok?"✅ ":"💡 ")+(q.e||""));const nx=el("button","btn",i===qs.length-1?"See my score":"Next");nx.style.marginTop="10px";nx.onclick=()=>{i++;step()};card.append(ex,nx)};opts.append(b)});card.append(opts)};
+  step();pane.append(el("div","section-h","Family scores today"),board());if(isParent()&&!quizDay)pane.append(makeQuizBtn())}
+function makeQuizBtn(){const b=el("button","btn soft","✨ Ask "+GN()+" to make tomorrow's quiz");b.style.marginTop="12px";
+  b.onclick=async()=>{if(!sample||!aiOn){toast(GN()+" can't think right now.");return}b.disabled=true;b.textContent="✨ Writing questions…";const tm=daysAgo(-1);
+    try{const r=await sample.json(`Write a 5-question multiple-choice quiz for the Espinal family (Dominican-American, Florida; kids from 6 to teens and parents). Mix: healthy eating (2025–2030 Dietary Guidelines), Dominican culture and history, kindness and family life, money basics, and fun science. Short questions, 4 short options each, only facts you are sure about, one gentle explanation sentence each. JSON only: {"qs":[{"q":"...","o":["...","...","...","..."],"a":index_of_correct_0_to_3,"e":"..."}]}`,{modelTier:"default",cache:false});
+      const qs=(r?.qs||[]).filter(x=>x&&x.q&&Array.isArray(x.o)&&x.o.length===4&&x.a>=0&&x.a<4).slice(0,5).map(x=>({q:String(x.q).slice(0,200),o:x.o.map(s=>String(s).slice(0,80)),a:+x.a,e:String(x.e||"").slice(0,200)}));
+      if(qs.length<3)throw 0;await C("quizday").doc(tm).set({date:tm,qs,by:"coco",at:Date.now()});b.textContent="✓ Tomorrow's quiz is ready";toast("✨ "+GN()+" wrote tomorrow's quiz")}
+    catch(e){b.disabled=false;b.textContent="✨ Try again";toast("Couldn't make a quiz right now.")}};return b}
+function drawGrat(pane){const today=gratitude.filter(g=>g.date===TODAY),mine=today.find(g=>g.by===uid),all=memberList();
+  pane.append(el("p","section-f","Each person shares one thing they're thankful for today. When everyone's in, "+GN()+" celebrates!"));
+  if(!mine){const t=el("textarea","field");t.rows=2;t.maxLength=200;t.placeholder="Today I'm thankful for…";t.setAttribute("aria-label","Your gratitude");t.style.marginTop="10px";
+    const b=el("button","btn","Share");b.style.marginTop="8px";b.onclick=async()=>{const v=t.value.trim();if(!v){toast("Write one thing first.");return}b.disabled=true;
+      try{await C("gratitude").doc(TODAY+"_"+uid).set({by:uid,date:TODAY,text:v.slice(0,200),at:Date.now()});chime([784,988,1175]);
+        if(today.length+1>=all.length){confetti(true);toast("🙏 Everyone shared today. What a grateful family!")}else toast("🙏 Shared")}catch(e){b.disabled=false;toast("Couldn't share it.")}};pane.append(t,b)}
+  const l=el("div","list plain");l.style.marginTop="12px";all.forEach(m=>{const g=today.find(x=>x.by===m.id),c=el("div","cell"),gg=el("span","grow");gg.append(el("span","t",m.name),el("span","s",g?"“"+g.text+"”":"Waiting…"));c.append(av(m,"sm"),gg);l.append(c)});
+  pane.append(el("div","section-h","Today · "+today.length+" of "+all.length),l);
+  const days=[...new Set(gratitude.filter(g=>g.date<TODAY).map(g=>g.date))].sort().reverse().slice(0,3);
+  days.forEach(d=>{pane.append(el("div","section-h",new Date(d+"T12:00").toLocaleDateString(undefined,{weekday:"long"})));const l2=el("div","list plain");
+    gratitude.filter(g=>g.date===d).forEach(g=>{const c=el("div","cell"),gg=el("span","grow");gg.append(el("span","t",members[g.by]?.name||""),el("span","s","“"+g.text+"”"));c.append(gg);l2.append(c)});pane.append(l2)})}
+function drawTalk(pane){let es=load("fh-talk-es")==="1",i=Math.floor(seeded(TODAY+"t")()*TALK.length);
+  const card=el("div","qcard talk"),lang=el("div","seg");lang.style.marginTop="10px";
+  [["en","English"],["es","Español"]].forEach(([v,n])=>{const b=el("button","",n);b.setAttribute("aria-pressed",(v==="es")===es);b.onclick=()=>{es=v==="es";store("fh-talk-es",es?"1":"0");lang.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));show()};lang.append(b)});
+  const show=(txt)=>{card.replaceChildren();card.append(el("span","k",es?"PREGUNTA PARA LA MESA":"TABLE QUESTION"),el("b","big2",txt||TALK[i][es?1:0]),el("p","",es?"Cada persona responde. ¡Escuchen sin interrumpir!":"Everyone answers. Listen without interrupting!"))};
+  const nx=el("button","btn","Next question");nx.style.marginTop="12px";nx.onclick=()=>{i=(i+1)%TALK.length;show();chime([660,880])};
+  const ai=el("button","btn soft","✨ "+GN()+", give us a new one");ai.style.marginTop="8px";
+  ai.onclick=async()=>{if(!sample||!aiOn){toast(GN()+" can't think right now.");return}ai.disabled=true;
+    try{const r=await sample("Give ONE warm, fun dinner-table conversation question for a Dominican-American family with kids from 6 to teens. "+(es?"Write it in simple Dominican-friendly Spanish.":"Write it in English.")+" Just the question, under 20 words, no quotes.",{modelTier:"quick",cache:false});show(r.text.trim().replace(/^["“]|["”]$/g,""))}catch(e){toast("Try again in a moment.")}ai.disabled=false};
+  pane.append(lang,card,nx,ai);show()}
+function renderFamilyTime(){const box=$("#famTime");if(!box||!me)return;box.replaceChildren();
+  const g=gratitude.filter(x=>x.date===TODAY).length,q=quizDocs.filter(x=>x.date===TODAY).length,n=memberList().length;
+  [["🎲","Quiz",q+"/"+n+" played","quiz"],["🙏","Gratitude",g+"/"+n+" shared","grat"],["🍽️","Dinner talk","Table questions","talk"]].forEach(([e,t,s,v])=>{const b=el("button","ftile");b.append(el("span","e",e),el("b","",t),el("span","s",s));b.onclick=()=>openGames(v);box.append(b)})}
+
+/* ---------- Coco's new tools ---------- */
+const COCO_TOOLS2=()=>[
+ {name:"get_health_today",description:"A person's health page for today: profile summary, food needs (like gluten-free), daily targets, what they logged today with totals, and gluten warnings. person = a family member's name or 'me'.",
+  inputSchema:{type:"object",properties:{person:{type:"string"}}},
+  execute:(inp)=>{const m=healthTarget(inp.person||"me"),h=health[m.id];if(!h)return{person:m.name,profile:null,note:"No health profile yet. Suggest setting it up in the Health tab."};
+    const p=planOf(h),list=mealsOn(m.id,TODAY),t=totals(list),a=Math.floor(ageOf(h));
+    return{person:m.name,age:a,child:a<18,foodNeeds:(h.cond||[]).map(c=>CONDS.find(x=>x.v===c)?.n),goal:a<18?"grow strong (no dieting)":h.goal,
+      targets:{calories:p.cal,protein_g:p.pLo,veg_cups:p.veg,fruit_cups:p.fruit,grain_servings:p.grain,dairy_cups:p.dairy,added_sugar_max_g:p.sugar,water_cups:p.water},
+      today:{calories:Math.round(t.c),protein_g:Math.round(t.p),veg_cups:+t.v.toFixed(1),fruit_cups:+t.f.toFixed(1),grain_servings:+t.g.toFixed(1),dairy_cups:+t.d.toFixed(1),added_sugar_g:Math.round(t.su)},
+      logged:list.map(x=>({meal:MEALT.find(k=>k.v===x.meal)?.n,food:x.n,qty:x.qty||1,cal:Math.round(x.c*(x.qty||1)),gluten:(x.fl||[]).includes("gl")}))}}},
+ {name:"search_foods",description:"Looks up foods in the app's food list (USDA averages, English or Spanish names). Use it before log_food to get accurate numbers.",
+  inputSchema:{type:"object",properties:{query:{type:"string"}},required:["query"]},
+  execute:(inp)=>foodMatches(String(inp.query||"")).slice(0,6).map(f=>({name:f.n,cal:f.c,protein_g:f.p,veg_cups:f.v||0,fruit_cups:f.f||0,grain_servings:f.g||0,dairy_cups:f.d||0,added_sugar_g:f.su||0,gluten:f.fl.includes("gl"),lactose:f.fl.includes("lac")}))},
+ {name:"log_food",description:"Adds foods someone ate to their Health log. Use search_foods values when they match; otherwise estimate typical USDA values for the portion. Ask how much if the portion is unclear. person = name or 'me'. meal = breakfast, lunch, dinner or snack.",
+  inputSchema:{type:"object",properties:{person:{type:"string"},meal:{type:"string",enum:["breakfast","lunch","dinner","snack"]},
+    items:{type:"array",items:{type:"object",properties:{name:{type:"string",description:"food with portion, e.g. White rice, 1 cup"},servings:{type:"number"},cal:{type:"number"},protein_g:{type:"number"},veg_cups:{type:"number"},fruit_cups:{type:"number"},grain_servings:{type:"number"},dairy_cups:{type:"number"},added_sugar_g:{type:"number"},gluten:{type:"boolean"},lactose:{type:"boolean"}},required:["name","cal"]}}},required:["items"]},
+  execute:async(inp)=>{const m=healthTarget(inp.person||"me");if(!isParent()&&m.id!==uid)throw new Error("Kids can only log their own food");
+    const meal=MEAL_KEYS[String(inp.meal||"").toLowerCase()]||mealNow(),n=x=>Math.max(0,Math.min(4000,+x||0)),items=(inp.items||[]).slice(0,12);if(!items.length)throw new Error("No foods given");
+    for(const it of items){await C("meals").add({by:m.id,date:TODAY,meal,n:String(it.name).slice(0,60),c:Math.round(n(it.cal)),p:Math.round(n(it.protein_g)),v:n(it.veg_cups),f:n(it.fruit_cups),g:n(it.grain_servings),d:n(it.dairy_cups),su:Math.round(n(it.added_sugar_g)),fl:[it.gluten?"gl":"",it.lactose?"lac":""].filter(Boolean),qty:Math.max(.25,Math.min(10,+it.servings||1)),est:true,viaCoco:true,at:Date.now(),addedBy:uid})}
+    const cal=items.reduce((a,it)=>a+n(it.cal)*(+it.servings||1),0),glu=(health[m.id]?.cond||[]).includes("gluten")&&items.some(it=>it.gluten);
+    novaAct("🍽️ Logged "+items.length+" food"+(items.length===1?"":"s")+" for "+m.name+" · about "+Math.round(cal)+" cal");if(glu)novaAct("⚠ Contains gluten");
+    return"Logged "+items.length+" items to "+m.name+"'s "+MEALT.find(k=>k.v===meal).n+" (about "+Math.round(cal)+" cal)."+(glu?" Warning: something contains gluten and "+m.name+" is gluten-free.":"")}},
+ {name:"open_health",description:"Opens the Health tab. view: today (the day's food and plan), add_food (search list), snap (take a meal photo), profile (edit profile). person = name or 'me'.",
+  inputSchema:{type:"object",properties:{view:{type:"string",enum:["today","add_food","snap","profile"]},person:{type:"string"}}},
+  execute:(inp)=>{const m=healthTarget(inp.person||"me");setTimeout(()=>{closeNova();hPerson=m.id;goTab("health");renderHealth();const v=inp.view;
+    if(v==="profile"||!health[m.id])openHealthProfile(m.id);else if(v==="add_food"||v==="snap"){openAddFood(m.id);if(v==="snap")setTimeout(()=>{const s=document.querySelector(".hsnap");if(s&&!s.hidden)s.click()},700)}},1500);return"Opening "+m.name+"'s health page"}},
+ {name:"add_reminder",description:"Sets an in-app reminder that pops up at a time. time is 24-hour HH:MM. repeat: daily, weekdays, weekends or once. for = a family member's name, 'me' or 'everyone' (only parents can set them for others).",
+  inputSchema:{type:"object",properties:{text:{type:"string"},time:{type:"string"},repeat:{type:"string",enum:["daily","weekdays","weekends","once"]},for:{type:"string"}},required:["text","time"]},
+  execute:async(inp)=>{const w=String(inp.for||"me");let forId;if(/every|all|family|todos/i.test(w))forId="all";else{const m=personByName(w);if(!m)throw new Error("No family member named "+w);forId=m.id}
+    const tm=String(inp.time).trim().replace(/^(\d):/,"0$1:");await addReminder({text:inp.text,time:tm,forId,repeat:inp.repeat||"daily"});novaAct("⏰ Reminder: "+inp.text+" · "+fmtHM(tm));return"Reminder set for "+fmtHM(tm)+" ("+(inp.repeat||"daily")+")"}},
+ {name:"list_reminders",description:"Lists the reminders for the person you're talking with (parents see everyone's).",
+  execute:()=>(isParent()?reminders:remFor(uid)).map(r=>({text:r.text,time:fmtHM(r.time),repeat:r.repeat,for:r.for==="all"?"everyone":members[r.for]?.name}))},
+ {name:"start_family_game",description:"Opens a family game: quiz (today's 5-question family quiz with scores), gratitude (everyone shares one thing they're thankful for), talk (dinner-table conversation questions).",
+  inputSchema:{type:"object",properties:{game:{type:"string",enum:["quiz","gratitude","talk"]}},required:["game"]},
+  execute:(inp)=>{const g={quiz:"quiz",gratitude:"grat",talk:"talk"}[inp.game]||"quiz";setTimeout(()=>{closeNova();openGames(g)},1500);return"Opening "+inp.game}}];
+const COCO_RULES2=`
+New powers: For food and health, use get_health_today before giving personal advice, search_foods to get accurate numbers, then log_food when someone tells you what they ate (confirm the portion if unclear; for gluten-free people, warn about gluten). Use open_health to open their page or the camera for a meal photo. Use add_reminder when asked to be reminded (convert times like "3pm" to "15:00"), and list_reminders to check them. Use start_family_game for the family quiz, gratitude round or dinner conversation questions. Never shame anyone about food or weight; with kids talk only about growing strong, energy and balance.`;
+
+
+function renderAll(){if(!me)return;renderHealth();renderReminders();renderFamilyTime();renderJourneyLib();renderToday();renderFive();renderWisdom();renderLive();renderChat();renderTasks();renderFamily();renderCalmBoard();renderBell()}
 
 /* boot */
 renderPresets();setLen(5);
@@ -2615,6 +2829,10 @@ uid=load("fh-uid");setAI(false);$("#aiStatus").textContent="Kindness helper star
   C("checkins").where("date","==",TODAY).onSnapshot(s=>{checkins=s.docs.map(d=>({id:d.id,...d.data()}));rerender()},fail);
   C("sessions").where("date",">=",WINDOW).onSnapshot(s=>{sessions=s.docs.map(d=>({id:d.id,...d.data()}));rerender()},fail);
   C("checkups").orderBy("at").limit(500).onSnapshot(s=>{checkups=s.docs.map(d=>({id:d.id,...d.data()}));if(me){renderFive();renderFamily()}},fail);
+  C("reminders").onSnapshot(s=>{reminders=s.docs.map(d=>({id:d.id,...d.data()}));if(me){renderReminders();checkReminders()}},fail);
+  C("gratitude").where("date",">=",WEEK).onSnapshot(s=>{gratitude=s.docs.map(d=>({id:d.id,...d.data()}));if(me){renderFamilyTime();if(openGames.redraw&&openGames.tab==="grat")openGames.redraw()}},fail);
+  C("quiz").where("date","==",TODAY).onSnapshot(s=>{quizDocs=s.docs.map(d=>({id:d.id,...d.data()}));if(me)renderFamilyTime()},fail);
+  C("quizday").doc(TODAY).onSnapshot(s=>{quizDay=s.exists?s.data():null},fail);
   C("health").onSnapshot(s=>{health={};s.docs.forEach(d=>health[d.id]=d.data());if(me)renderHealth()},fail);
   C("meals").where("date",">=",WEEK).onSnapshot(s=>{meals=s.docs.map(d=>({id:d.id,...d.data()}));if(me)renderHealth()},fail);
   C("fivefold").where("date",">=",WEEK).onSnapshot(s=>{fivefold=s.docs.map(d=>({id:d.id,...d.data()}));if(me){renderFive();renderToday()}},fail);
