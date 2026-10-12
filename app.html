@@ -1,6 +1,6 @@
 <title>Espinal Family Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&family=Sora:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&family=Sora:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: a mobile app from another dimension — deep-space ground, glass panels with neon edges, HUD corners. One committed dark look. */
 :root{
@@ -520,6 +520,78 @@ body:has(#sheetRoot .sheet) .cocopop{display:none}
 .hsnapname{background:transparent!important;padding:0!important;font-size:17px;width:100%}
 .hsnapcal{display:inline-block!important;width:64px!important;background:var(--fill)!important;padding:3px 8px!important;border-radius:8px!important;font-size:14px;text-align:right}
 @media (max-width:380px){.htiles{gap:7px}.htile{padding:10px}.htile b{font-size:22px}.hfood{flex-direction:column}.hbars{width:100%}}
+/* ===== FAMILY SUNSHINE THEME ===== */
+.av.pic{overflow:hidden;background:none!important;box-shadow:none!important}
+.av.pic img,.av.pic svg{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.av.xl{width:120px;height:120px;font-size:60px}
+.cover{position:relative;border-radius:24px;overflow:hidden;margin:0 0 16px;aspect-ratio:16/9;cursor:pointer;box-shadow:0 10px 30px rgba(20,40,70,.18);background:#bfeaff}
+.cover img,.cover svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cover.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.55))}
+.cover .ccap{position:absolute;left:16px;right:16px;bottom:12px;z-index:1;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.cover.toon .ccap{bottom:auto;top:12px;color:#173a5e;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+.cover .ccap b{display:block;font-family:var(--display);font-size:26px;line-height:1.05}
+.cover .ccap span{font-size:13px;opacity:.95}
+.gview{border-radius:18px;overflow:hidden;background:#000;display:grid;place-items:center;max-height:60vh}
+.gview img{width:100%;max-height:60vh;object-fit:contain;display:block}
+.gnav{display:flex;align-items:center;justify-content:space-between;margin:12px 0}
+.gnav span{font-size:14px;color:var(--label-2)}
+.gacts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pthumb{aspect-ratio:1;border-radius:12px;overflow:hidden;position:relative}
+.pthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.pthumb.cov::after{content:"⭐";position:absolute;top:4px;left:6px;font-size:14px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+.picprev{display:grid;place-items:center;margin:4px 0 14px}
+.toongrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.toonpick{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--label-2)}
+.toonpick svg{width:64px;height:64px;border-radius:50%}
+.toonpick[aria-pressed="true"] svg{box-shadow:0 0 0 3px var(--tint)}
+.mepic{cursor:pointer}.mepic .s2{font-size:13px;color:var(--tint);font-weight:600;margin-top:2px;display:block}
+
+html[data-theme="sun"]{--bg:#fff7ec;--card:#ffffff;--card-2:#fff1e2;--fill:rgba(28,60,96,.07);--sep:rgba(28,50,80,.11);
+  --label:#1d2a39;--label-2:rgba(29,42,57,.66);--label-3:rgba(29,42,57,.40);--tint:#0b7f8a;--tint-soft:rgba(11,127,138,.11);--on-tint:#fff;
+  --green:#1f9a52;--orange:#ec6a1c;--red:#de3158;--yellow:#e2a400;--indigo:#6a58d6;--pink:#e2508f;--star-fg:#e2a400;
+  --bar:rgba(255,251,245,.94);--bubble-other:#ffffff;--bubble-mine:linear-gradient(135deg,#0b8f99,#2b8ff0);
+  --font:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--display:"Baloo 2","Nunito",system-ui,sans-serif;--mono:"Nunito",system-ui,sans-serif;color-scheme:light}
+html[data-theme="sun"] body{background:radial-gradient(ellipse at 0% -10%,rgba(255,170,120,.35),transparent 50%),radial-gradient(ellipse at 100% 10%,rgba(80,200,210,.28),transparent 45%),linear-gradient(180deg,#fff7ec,#fffaf4 60%,#f3fbf8);background-attachment:fixed}
+html[data-theme="sun"] #space{display:none}
+html[data-theme="sun"] .summary::before,html[data-theme="sun"] .five::before,html[data-theme="sun"] .wisdom::before,html[data-theme="sun"] .calm::before{display:none}
+html[data-theme="sun"] .list,html[data-theme="sun"] .summary,html[data-theme="sun"] .five,html[data-theme="sun"] .wisdom,html[data-theme="sun"] .htile,html[data-theme="sun"] .hfood,html[data-theme="sun"] .hweek,html[data-theme="sun"] .ftile,html[data-theme="sun"] .qcard,html[data-theme="sun"] .hcond,html[data-theme="sun"] .novacard,html[data-theme="sun"] .goal,html[data-theme="sun"] .moodrow button,html[data-theme="sun"] .preset,html[data-theme="sun"] .para{box-shadow:0 2px 12px rgba(28,50,80,.07);border-color:transparent}
+html[data-theme="sun"] .large{font-family:var(--display);text-transform:none;letter-spacing:0;font-size:32px;font-weight:700;background:none;-webkit-text-fill-color:currentColor;color:#1d2a39;filter:none}
+html[data-theme="sun"] .section-h{font-family:var(--font);font-size:13px;letter-spacing:.04em;color:var(--label-2);opacity:1;font-weight:800}
+html[data-theme="sun"] .section-h::before{content:none}
+html[data-theme="sun"] .navrow .sub{font-family:var(--font);letter-spacing:.06em;font-size:12px;font-weight:800}
+html[data-theme="sun"] .btn{background:linear-gradient(135deg,#ff7a59,#f9a03f);color:#fff;box-shadow:0 6px 16px rgba(255,122,89,.30);font-family:var(--display);letter-spacing:0;font-weight:700;text-transform:none}
+html[data-theme="sun"] .btn.soft{background:var(--tint-soft);color:var(--tint);border:0;box-shadow:none}
+html[data-theme="sun"] .btn.gray{background:var(--fill);color:var(--label);border:0;box-shadow:none}
+html[data-theme="sun"] .tabbar{border-top:1px solid var(--sep);box-shadow:0 -6px 20px rgba(28,50,80,.06)}
+html[data-theme="sun"] .tabbar button{font-family:var(--font);font-size:10.5px;letter-spacing:0;text-transform:none;font-weight:700}
+html[data-theme="sun"] .tabbar button[aria-selected="true"]{color:#ec6a1c;filter:none}
+html[data-theme="sun"] .seg{background:rgba(28,60,96,.07);border:0}
+html[data-theme="sun"] .seg button[aria-pressed="true"]{background:#fff;box-shadow:0 1px 4px rgba(28,50,80,.14);color:var(--label)}
+html[data-theme="sun"] input.field,html[data-theme="sun"] textarea.field,html[data-theme="sun"] .inrow textarea,html[data-theme="sun"] select.field{background:#fff;border:1px solid var(--sep);color:var(--label)}
+html[data-theme="sun"] .cell input.field{border:0;background:transparent}
+html[data-theme="sun"] .chip.on{background:linear-gradient(135deg,#ff7a59,#f9a03f);color:#fff}
+html[data-theme="sun"] .sheet{background:#fffaf4;border-top:0;box-shadow:0 -10px 40px rgba(28,50,80,.18)}
+html[data-theme="sun"] .sheet h3,html[data-theme="sun"] .hero h1,html[data-theme="sun"] .player .pbar b{text-transform:none;letter-spacing:0}
+html[data-theme="sun"] .toast{background:#1d2a39;color:#fff;border:0;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+html[data-theme="sun"] .testbar{font-family:var(--font);font-size:12px;letter-spacing:0}
+html[data-theme="sun"] .check{box-shadow:inset 0 0 0 2px rgba(11,127,138,.45)}
+html[data-theme="sun"] .cell.done .check{box-shadow:none}
+html[data-theme="sun"] .bubble{border:1px solid var(--sep)}
+html[data-theme="sun"] .hero .logo{background:radial-gradient(circle at 40% 30%,#ffd166,#ff7a59 60%,#e2508f);box-shadow:0 10px 30px rgba(255,122,89,.35)}
+html[data-theme="sun"] .cocopop{background:#fff;box-shadow:0 0 0 1px var(--sep),0 14px 40px rgba(28,50,80,.22);color:var(--label)}
+html[data-theme="sun"] .cocopop b{color:#ec6a1c}
+html[data-theme="sun"] .hsnap{background:linear-gradient(135deg,rgba(255,122,89,.14),rgba(11,127,138,.12));box-shadow:inset 0 0 0 1px rgba(255,122,89,.35)}
+html[data-theme="sun"] .hweek .hday .bar i{background:linear-gradient(0deg,#0b8f99,#2b8ff0)}
+html[data-theme="sun"] .qcard.talk{background:linear-gradient(135deg,#fff1e2,#e6f7f5)}
+html[data-theme="sun"] .qopt{background:#f4f1ec}
+html[data-theme="sun"] .hsel option{background:#fff}
+html[data-theme="sun"] .chakras button,html[data-theme="sun"] .stat span{color:var(--label-2)}
+html[data-theme="sun"] .empty b{letter-spacing:0}
+html[data-theme="sun"] .wisdom{background:linear-gradient(135deg,#fff,#fff4e6)}
+html[data-theme="sun"] .nova,html[data-theme="sun"] .calm{--card:rgba(16,20,46,.62);--card-2:rgba(28,34,72,.62);--fill:rgba(150,170,255,.10);--sep:rgba(120,150,255,.20);--label:#eaf0ff;--label-2:rgba(196,208,255,.70);--label-3:rgba(196,208,255,.38);--tint:#3ef0ff;--tint-soft:rgba(62,240,255,.12);--on-tint:#03101a;--bubble-other:rgba(38,46,96,.72);color:var(--label);color-scheme:dark}
+html[data-theme="sun"] .calm .playbtn{background:#fff;color:#5b3fd6}
+html[data-theme="sun"] .nova input.field,html[data-theme="sun"] .nova textarea{background:rgba(8,12,34,.75);color:#eaf0ff}
 </style>
 
 <canvas id="space" aria-hidden="true"></canvas>
@@ -564,6 +636,7 @@ body:has(#sheetRoot .sheet) .cocopop{display:none}
       <div class="navrow"><span class="sub" id="todayDate"></span>
         <button class="icon-btn" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5.5-6.84V3.5a1.5 1.5 0 0 0-3 0v.66A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg><span class="badge" id="bellBadge" hidden></span></button></div>
       <div class="large" id="hello">Hi!</div>
+      <div id="coverSlot"></div>
       <div class="novacard" id="novaCard"></div>
       <div class="summary">
         <div class="ring" id="myRing"></div>
@@ -672,6 +745,8 @@ body:has(#sheetRoot .sheet) .cocopop{display:none}
     <section class="page" data-tab="family" hidden>
       <div class="large">Family</div>
       <div class="list" id="meCard"></div>
+      <div id="lookBox"></div>
+      <div id="photoBox"></div>
       <div id="codeBox" hidden>
         <div class="section-h">Family code</div>
         <div class="list plain"><div class="cell"><span class="grow" style="font-size:28px;font-weight:700;letter-spacing:.2em;font-variant-numeric:tabular-nums" id="famCode"></span><button class="btn sm soft" id="copyCode">Copy</button></div></div>
@@ -2254,7 +2329,7 @@ function renderFamily(){
     if(isParent()){c.append(el("span","chev","›"));c.onclick=openNaming}gr.append(c)}
   const mc=$("#meCard");mc.replaceChildren();const c=el("div","cell");c.style.padding="16px";
   const g=el("span","grow"),nm=el("span","t",me.name);nm.style.fontSize="22px";nm.style.fontWeight="700";
-  g.append(nm,el("span","s",(isParent()?"Parent":"Kid")+" · 🔥 "+streakOf(uid)+" day streak"));c.append(av(me,"lg"),g);mc.append(c);
+  g.append(nm,el("span","s",(isParent()?"Parent":"Kid")+" · 🔥 "+streakOf(uid)+" day streak"),el("span","s2","🖼️ Change my picture"));c.append(av(me,"lg"),g);c.classList.add("mepic");c.setAttribute("role","button");c.tabIndex=0;c.onclick=()=>openPicture(uid);mc.append(c);
   $("#codeBox").hidden=!isParent();$("#resetBox").hidden=!isParent();$("#famCode").textContent=family?.code||"";
   const list=$("#memberList");list.replaceChildren();
   memberList().forEach(m=>{const ck=checkins.find(x=>x.id===TODAY+"_"+m.id);
@@ -2270,6 +2345,7 @@ function renderFamily(){
 $("#copyCode").onclick=()=>{const code=family?.code||"";try{navigator.clipboard.writeText(code).then(()=>toast("Code copied"),()=>toast("Code: "+code))}catch(e){toast("Code: "+code)}};
 function openMember(m){
   openSheet(m.name,body=>{
+    {const pb=el("button","btn soft","🖼️ Change "+m.name+"'s picture");pb.style.marginBottom="6px";pb.onclick=()=>openPicture(m.id);body.append(pb)}
     if(m.role==="kid"){
       body.append(el("div","section-h","Reward goal"));
       const l=el("div","list plain"),c1=el("div","cell"),c2=el("div","cell");
@@ -2296,7 +2372,7 @@ $("#resetBtn").onclick=async()=>{
   const b=$("#resetBtn"),lab=b.querySelector(".grow");
   if(b.dataset.sure!=="1"){b.dataset.sure="1";lab.textContent="Tap again to erase everything";setTimeout(()=>{b.dataset.sure="";lab.textContent="Reset all test data"},4000);return}
   lab.textContent="Clearing…";b.disabled=true;
-  try{for(const n of ["messages","tasks","done","checkins","sessions","fivefold","checkups","live","health","meals","reminders","gratitude","quiz","quizday","members"]){const s=await C(n).get();for(const d of s.docs)await C(n).doc(d.id).delete()}
+  try{for(const n of ["messages","tasks","done","checkins","sessions","fivefold","checkups","live","health","meals","reminders","gratitude","quiz","quizday","photos","members"]){const s=await C(n).get();for(const d of s.docs)await C(n).doc(d.id).delete()}
     await C("family").doc("main").delete();halt();inLive=null;uid=null;store("fh-uid",null);currentTab="today";toast("Test data cleared")}
   catch(e){toast("Couldn't clear everything. Try again.")}
   b.disabled=false;b.dataset.sure="";lab.textContent="Reset all test data";
@@ -2708,6 +2784,109 @@ async function askCocoPlan(id){const h=health[id],who=members[id]||me,p=planOf(h
       out.textContent=r.text.replace(/\*\*/g,"")}catch(e){out.textContent="Couldn't make a plan right now. Try again later."}})}
 
 
+/* FAMILY THEME */
+/* ================= FAMILY THEME: sunshine look, family photos, cartoon avatars ================= */
+let photos=[];
+function applyTheme(){const t=family?.theme||load("fh-theme")||"sun";document.documentElement.dataset.theme=t;store("fh-theme",t)}
+applyTheme();
+
+/* cartoon avatars — drawn to look like the Espinal family */
+const TOONS={
+ dad:{n:"Dad",skin:"#c98d63",hair:"short",hc:"#2a1c14",beard:1,glasses:"sport",shirt:"#3d6fe0",leaves:"#ff6fae",bg:"#bde7ff"},
+ mom:{n:"Mom",skin:"#e6b38f",hair:"bun",hc:"#3b2418",glasses:"round",shirt:"#3c4148",necklace:1,bg:"#ffd9c7"},
+ max:{n:"Max",skin:"#dfab84",hair:"curly",hc:"#6e4527",shirt:"#2f7fe0",emblem:1,bg:"#ffe9a8"},
+ ben:{n:"Ben",skin:"#c58c63",hair:"cap",hc:"#1f1a17",cap:"#24418f",shirt:"#e9edf2",bg:"#c9f2d8"},
+ charles:{n:"Charles",skin:"#e0a77d",hair:"curly",hc:"#4a2c19",shirt:"#1f2b4d",kid:1,bg:"#e6dcff"},
+ girl:{n:"Star",skin:"#d9a27a",hair:"long",hc:"#2b1a12",shirt:"#ff7a59",bg:"#ffe0ec"},
+ buddy:{n:"Buddy",skin:"#b97d55",hair:"short",hc:"#1d1410",shirt:"#ffb703",bg:"#d8f3ff"}};
+function toonSVG(p,o){o=o||{};const S=p.skin,H=p.hc,id="t"+Math.random().toString(36).slice(2,7);let s=`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">`;
+  if(!o.nobg)s+=`<circle cx="50" cy="50" r="50" fill="${p.bg}"/>`;
+  // back hair
+  if(p.hair==="bun")s+=`<circle cx="50" cy="17" r="9" fill="${H}"/>`;
+  if(p.hair==="long")s+=`<path d="M25 46 C22 70 30 84 36 86 L64 86 C70 84 78 70 75 46 Z" fill="${H}"/>`;
+  // body
+  s+=`<rect x="44" y="62" width="12" height="12" rx="4" fill="${S}"/><path d="M12 102 C14 80 30 70 50 70 C70 70 86 80 88 102Z" fill="${p.shirt}"/>`;
+  if(p.leaves)s+=[[24,88,-30],[40,80,20],[66,84,-15],[78,94,30],[54,95,10]].map(([x,y,r])=>`<path d="M0 -6 C4 -3 4 3 0 6 C-4 3 -4 -3 0 -6Z" transform="translate(${x} ${y}) rotate(${r}) scale(1.3)" fill="${p.leaves}" opacity=".9"/>`).join("");
+  if(p.emblem)s+=`<circle cx="62" cy="84" r="5" fill="none" stroke="#fff" stroke-width="1.6"/>`;
+  if(p.shirt==="#e9edf2")s+=`<path d="M58 80 L58 92 M54 84 L62 84" stroke="#d2385c" stroke-width="2.2" stroke-linecap="round"/>`;
+  if(p.necklace)s+=`<path d="M41 71 Q50 80 59 71" stroke="#e8b931" stroke-width="1.4" fill="none"/>`;
+  // head
+  const ky=p.kid?2:0;s+=`<g transform="translate(0 ${ky})"><circle cx="28" cy="49" r="5" fill="${S}"/><circle cx="72" cy="49" r="5" fill="${S}"/><ellipse cx="50" cy="46" rx="22" ry="${p.kid?22:24}" fill="${S}"/>`;
+  // hair front
+  if(p.hair==="short")s+=`<path d="M28 44 C27 25 39 19 50 19 C62 19 74 25 72 44 C68 33 59 29 50 30 C41 29 32 33 28 44Z" fill="${H}"/>`;
+  if(p.hair==="bun"||p.hair==="long")s+=`<path d="M27 46 C26 26 38 20 50 20 C62 20 74 26 73 46 C70 34 62 28 52 30 C44 28 32 33 27 46Z" fill="${H}"/>`;
+  if(p.hair==="curly"){let c="";const n=11;for(let i=0;i<n;i++){const a=Math.PI*(1.02+i*0.96/(n-1)),r=p.kid?22:24,x=50+Math.cos(a)*r*1.02,y=44+Math.sin(a)*r*1.05;c+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(p.kid?7:8.5)}" fill="${H}"/>`}
+    for(let i=0;i<5;i++){const x=36+i*7,y=(p.kid?21:17)+((i%2)?3:0);c+=`<circle cx="${x}" cy="${y}" r="${p.kid?7:8}" fill="${H}"/>`}s+=c+`<circle cx="44" cy="${p.kid?29:27}" r="6" fill="${H}"/><circle cx="56" cy="${p.kid?29:27}" r="6" fill="${H}"/>`}
+  if(p.hair==="cap")s+=`<path d="M28 40 C28 30 30 33 31 42Z M72 40 C72 30 70 33 69 42Z" fill="${H}"/><path d="M27 40 C26 20 74 20 73 40 Z" fill="${p.cap}"/><path d="M26 39 Q50 46 74 39 L75 43 Q50 51 25 43Z" fill="#162e66"/><circle cx="50" cy="22" r="2" fill="#162e66"/>`;
+  // face
+  s+=`<circle cx="38" cy="56" r="4" fill="#ff7a8a" opacity=".28"/><circle cx="62" cy="56" r="4" fill="#ff7a8a" opacity=".28"/>`;
+  if(p.glasses==="sport")s+=`<defs><linearGradient id="${id}" x1="0" x2="1"><stop offset="0" stop-color="#1fb6ff"/><stop offset=".5" stop-color="#5ce1e6"/><stop offset="1" stop-color="#1e5bd8"/></linearGradient></defs><path d="M28 44 Q50 38 72 44 L70 53 Q61 57 53 51 L50 50 L47 51 Q39 57 30 53Z" fill="url(#${id})" stroke="#fff" stroke-width="2"/>`;
+  else{s+=`<circle cx="41" cy="48" r="3" fill="#2b2220"/><circle cx="59" cy="48" r="3" fill="#2b2220"/><circle cx="42" cy="47" r="1" fill="#fff"/><circle cx="60" cy="47" r="1" fill="#fff"/>`;
+    s+=`<path d="M36 41 Q41 38 46 41 M54 41 Q59 38 64 41" stroke="${H}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`}
+  if(p.glasses==="round")s+=`<rect x="33.5" y="42.5" width="14" height="11" rx="4" fill="rgba(255,255,255,.18)" stroke="#9b2f3a" stroke-width="2"/><rect x="52.5" y="42.5" width="14" height="11" rx="4" fill="rgba(255,255,255,.18)" stroke="#9b2f3a" stroke-width="2"/><path d="M47.5 47 L52.5 47" stroke="#9b2f3a" stroke-width="2"/>`;
+  if(p.beard)s+=`<path d="M41 60 Q50 56 59 60 Q50 59 41 60Z" fill="${H}" stroke="${H}" stroke-width="1.6" stroke-linejoin="round"/><path d="M45 64 Q50 66 55 64 Q54 71 50 72 Q46 71 45 64Z" fill="${H}"/>`;
+  s+=p.kid||p.hair==="curly"&&!p.beard?`<path d="M43 59 Q50 66 57 59 Z" fill="#7a2230"/><path d="M44 59.5 Q50 61.5 56 59.5" stroke="#fff" stroke-width="1.6" fill="none"/>`:`<path d="M43 ${p.beard?62:59} Q50 ${p.beard?66:64} 57 ${p.beard?62:59}" stroke="#7a2230" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  return s+`</g></svg>`}
+function toonKey(m){if(!m)return null;if(m.toon)return m.toon==="none"?null:TOONS[m.toon]?m.toon:null;if(m.emoji&&m.toonPicked===false)return null;
+  const n=(m.name||"").toLowerCase();return/^(dad|papi|papa|william|willy|daddy)/.test(n)?"dad":/^(mom|mami|mama|rosa|mommy)/.test(n)?"mom":/^max/.test(n)?"max":/^ben/.test(n)?"ben":/^charl/.test(n)?"charles":null}
+const _avOld=av;
+av=function(m,cls){if(m?.photo){const s=el("span","av pic"+(cls?" "+cls:""));const i=el("img");i.src=m.photo;i.alt="";i.loading="lazy";s.append(i);return s}
+  const k=toonKey(m);if(k){const s=el("span","av pic"+(cls?" "+cls:""));s.innerHTML=toonSVG(TOONS[k]);return s}return _avOld(m,cls)};
+
+/* photos: resize on the device, then keep them in the app's private storage */
+let assetsNS;async function assetsApi(){if(assetsNS===undefined){try{assetsNS=await claude.use("assets")}catch(e){assetsNS=null}}return assetsNS}
+async function shrink(file,max,q){let bmp;try{bmp=await createImageBitmap(file,{imageOrientation:"from-image"})}catch(e){bmp=await createImageBitmap(file)}
+  const k=Math.min(1,max/Math.max(bmp.width,bmp.height)),cv=document.createElement("canvas");cv.width=Math.round(bmp.width*k);cv.height=Math.round(bmp.height*k);cv.getContext("2d").drawImage(bmp,0,0,cv.width,cv.height);
+  return{cv,w:cv.width,h:cv.height,blob:await new Promise(r=>cv.toBlob(r,"image/jpeg",q||.82))}}
+async function savePicture(file,max){const a=await assetsApi();
+  if(a){const r=await shrink(file,max,.85);const up=await a.upload(r.blob);return{url:up.url,asset:up.id,w:r.w,h:r.h}}
+  const r=await shrink(file,Math.min(max,900),.72);return{url:r.cv.toDataURL("image/jpeg",.72),w:r.w,h:r.h}}
+function pickFiles(multiple,cb){const i=el("input");i.type="file";i.accept="image/*";i.multiple=!!multiple;i.style.cssText="position:fixed;left:-9999px;opacity:0";document.body.append(i);
+  i.onchange=()=>{const f=[...(i.files||[])];i.remove();if(f.length)cb(f)};i.click()}
+async function addPhotos(files){toast("Adding "+files.length+" photo"+(files.length===1?"":"s")+"…");let n=0;
+  for(const f of files.slice(0,10)){try{const p=await savePicture(f,1600);await C("photos").add({...p,by:uid,at:Date.now()});n++}catch(e){console.warn(e)}}
+  if(n){chime([660,880,1320]);toast("📸 "+n+" photo"+(n===1?"":"s")+" added");if(!family?.cover&&isParent()){const first=photos[photos.length-1];first&&C("family").doc("main").update({cover:first.id}).catch(()=>{})}}else toast("Couldn't add that photo. Try another one.")}
+const coverPhoto=()=>photos.find(p=>p.id===family?.cover)||photos[0]||null;
+function familyBannerSVG(){const order=["dad","max","charles","ben","mom"],xs=[18,36,50,64,82],sc=[1,1,.82,.95,1];
+  let s=`<svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd3ff"/><stop offset=".6" stop-color="#bfeaff"/><stop offset="1" stop-color="#ffe7b8"/></linearGradient></defs>
+  <rect width="400" height="190" fill="url(#sky)"/><circle cx="340" cy="44" r="26" fill="#ffd34d"/><circle cx="340" cy="44" r="36" fill="#ffd34d" opacity=".25"/>
+  <path d="M0 160 Q100 140 200 158 T400 150 L400 190 L0 190Z" fill="#2fb4a8" opacity=".85"/><path d="M0 172 Q120 160 240 172 T400 168 L400 190 L0 190Z" fill="#ffe2a6"/>
+  <g stroke="#7a5a3a" stroke-width="5" fill="none"><path d="M30 190 Q36 140 26 100"/><path d="M372 190 Q366 150 378 112"/></g>
+  <g fill="#2f9e5b"><path d="M26 100 Q0 92 -8 110 Q10 100 26 104Z"/><path d="M26 100 Q50 84 66 98 Q46 96 26 104Z"/><path d="M26 100 Q20 76 36 66 Q30 86 28 102Z"/><path d="M378 112 Q404 100 412 118 Q394 110 378 116Z"/><path d="M378 112 Q352 96 336 110 Q356 108 378 116Z"/><path d="M378 112 Q384 88 368 78 Q374 98 376 114Z"/></g>`;
+  order.forEach((k,i)=>{const w=96*sc[i],x=xs[i]*4-w/2,y=190-w*1.02;s+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${(w/100).toFixed(3)})">${toonSVG(TOONS[k],{nobg:1}).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g>`});
+  return s+`</svg>`}
+function renderCover(){const box=$("#coverSlot");if(!box||!me)return;box.replaceChildren();const p=coverPhoto(),c=el("div","cover"+(p?" photo":" toon"));
+  if(p){const im=el("img");im.src=p.url;im.alt="Our family";c.append(im)}else{c.innerHTML=familyBannerSVG()}
+  const cap=el("div","ccap");cap.append(el("b","","Familia Espinal"),el("span","",p?photos.length+" family photo"+(photos.length===1?"":"s")+" · tap to see them":"Add your family photos in the Family tab"));c.append(cap);
+  c.setAttribute("role","button");c.tabIndex=0;c.onclick=()=>photos.length?openGallery(p?.id):(goTab("family"),setTimeout(()=>$("#photoBox")?.scrollIntoView({behavior:"smooth"}),200));box.append(c)}
+function openGallery(startId){let i=Math.max(0,photos.findIndex(p=>p.id===startId));
+  openSheet("Family photos",body=>{const fr=el("div","gview"),im=el("img");fr.append(im);const nav=el("div","gnav"),pv=el("button","smallround","‹"),nx=el("button","smallround","›"),ct=el("span","");pv.setAttribute("aria-label","Previous photo");nx.setAttribute("aria-label","Next photo");nav.append(pv,ct,nx);
+    const acts=el("div","gacts");body.append(fr,nav,acts);
+    const show=()=>{const p=photos[i];if(!p){closeSheet();return}im.src=p.url;im.alt="Family photo "+(i+1);ct.textContent=(i+1)+" / "+photos.length+(p.id===family?.cover?" · ⭐ cover":"");acts.replaceChildren();
+      if(isParent()&&p.id!==family?.cover){const b=el("button","btn sm soft","⭐ Make cover");b.onclick=()=>C("family").doc("main").update({cover:p.id}).then(()=>{toast("⭐ New cover photo");show()});acts.append(b)}
+      if(isParent()||p.by===uid){const d=el("button","btn sm gray","Delete");d.onclick=async()=>{if(d.dataset.sure!=="1"){d.dataset.sure="1";d.textContent="Tap again to delete";return}
+        try{await C("photos").doc(p.id).delete();if(p.asset){const a=await assetsApi();a?.delete(p.asset).catch(()=>{})}if(family?.cover===p.id)C("family").doc("main").update({cover:null}).catch(()=>{});toast("Photo deleted");i=Math.max(0,i-1);setTimeout(show,150)}catch(e){toast("Couldn't delete it.")}};acts.append(d)}};
+    pv.onclick=()=>{i=(i-1+photos.length)%photos.length;show()};nx.onclick=()=>{i=(i+1)%photos.length;show()};
+    let x0=null;fr.addEventListener("touchstart",e=>x0=e.touches[0].clientX,{passive:true});fr.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)(dx<0?nx:pv).click();x0=null});
+    show()})}
+function renderPhotoBox(){const box=$("#photoBox");if(!box||!me)return;box.replaceChildren();
+  const head=el("div","navrow");head.style.margin="22px 4px 7px";const h=el("span","section-h","📸 Our photos");h.style.margin="0";const add=el("button","linkbtn","Add");add.onclick=()=>pickFiles(true,addPhotos);head.append(h,add);box.append(head);
+  if(!photos.length){const e=emptyBox("📸","No family photos yet","Add pictures of your family. The ⭐ cover photo shows on everyone's Today screen.");const b=el("button","btn","Add photos");b.style.marginTop="12px";b.onclick=()=>pickFiles(true,addPhotos);e.append(b);box.append(e);return}
+  const g=el("div","pgrid");photos.slice(0,12).forEach(p=>{const b=el("button","pthumb"+(p.id===family?.cover?" cov":""));const im=el("img");im.src=p.url;im.alt="Family photo";im.loading="lazy";b.append(im);b.onclick=()=>openGallery(p.id);g.append(b)});box.append(g);
+  box.append(el("p","section-f","Photos stay private inside your family's app."))}
+function renderLook(){const box=$("#lookBox");if(!box||!me)return;box.replaceChildren();box.append(el("div","section-h","App look"));
+  const seg=el("div","seg"),cur=document.documentElement.dataset.theme;[["sun","☀️ Sunshine"],["space","🌌 Space"]].forEach(([v,n])=>{const b=el("button","",n);b.setAttribute("aria-pressed",v===cur);
+    b.onclick=()=>{document.documentElement.dataset.theme=v;store("fh-theme",v);seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));if(isParent())C("family").doc("main").update({theme:v}).catch(()=>{})};seg.append(b)});
+  box.append(seg,el("p","section-f",isParent()?"Changes the look for the whole family.":"Changes the look on this device."))}
+function openPicture(id){const m=members[id]?{id,...members[id]}:me;if(!(isParent()||id===uid))return;
+  openSheet((id===uid?"My":m.name+"'s")+" picture",body=>{const pv=el("div","picprev");pv.append(av(m,"xl"));body.append(pv);
+    const up=el("button","btn","📷 Use a photo");up.onclick=()=>pickFiles(false,async f=>{up.disabled=true;up.textContent="Saving…";try{const p=await savePicture(f[0],360);await C("members").doc(id).update({photo:p.url});closeSheet();toast("Looking good! 📸")}catch(e){up.disabled=false;up.textContent="📷 Use a photo";toast("Couldn't use that photo.")}});
+    body.append(up,el("div","section-h","Or pick a cartoon"));const g=el("div","toongrid");
+    Object.entries(TOONS).forEach(([k,t])=>{const b=el("button","toonpick");b.setAttribute("aria-pressed",!m.photo&&toonKey(m)===k);b.innerHTML=toonSVG(t);b.append(el("span","",t.n));b.setAttribute("aria-label","Cartoon "+t.n);
+      b.onclick=()=>C("members").doc(id).update({toon:k,photo:null}).then(()=>{closeSheet();toast("✨ New cartoon picture")});g.append(b)});body.append(g);
+    const em=el("button","btn gray","😀 Use my emoji instead");em.style.marginTop="12px";em.onclick=()=>C("members").doc(id).update({toon:"none",photo:null}).then(()=>{closeSheet();toast("Emoji picture on")});body.append(em)})}
+
+
 /* COCO 2 */
 /* ================= COCO 2: health helper tools, check-ins, family games, reminders ================= */
 let reminders=[],gratitude=[],quizDocs=[],quizDay=null;
@@ -2896,7 +3075,7 @@ const COCO_RULES2=`
 New powers: For food and health, use get_health_today before giving personal advice, search_foods to get accurate numbers, then log_food when someone tells you what they ate (confirm the portion if unclear; for gluten-free people, warn about gluten). Use open_health to open their page or the camera for a meal photo. Use add_reminder when asked to be reminded (convert times like "3pm" to "15:00"), and list_reminders to check them. Use start_family_game for the family quiz, gratitude round or dinner conversation questions. Never shame anyone about food or weight; with kids talk only about growing strong, energy and balance.`;
 
 
-function renderAll(){if(!me)return;renderHealth();renderReminders();renderFamilyTime();renderJourneyLib();renderToday();renderFive();renderWisdom();renderLive();renderChat();renderTasks();renderFamily();renderCalmBoard();renderBell()}
+function renderAll(){if(!me)return;renderCover();renderPhotoBox();renderLook();renderHealth();renderReminders();renderFamilyTime();renderJourneyLib();renderToday();renderFive();renderWisdom();renderLive();renderChat();renderTasks();renderFamily();renderCalmBoard();renderBell()}
 
 /* boot */
 renderPresets();setLen(5);
@@ -2906,7 +3085,8 @@ uid=load("fh-uid");setAI(false);$("#aiStatus").textContent="Kindness helper star
   if(!db){$("#loadingView").querySelector("p").textContent="Sign in to Claude to test the family app.";return}
   const fail=()=>toast("Lost connection. Reload to reconnect.");
   const rerender=()=>{if(me)renderAll()};
-  C("family").doc("main").onSnapshot(s=>{family=s.exists?s.data():null;loaded.family=true;applyGuideName();route();rerender()},fail);
+  C("photos").orderBy("at","desc").limit(60).onSnapshot(s=>{photos=s.docs.map(d=>({id:d.id,...d.data()}));if(me){renderCover();renderPhotoBox()}},fail);
+  C("family").doc("main").onSnapshot(s=>{family=s.exists?s.data():null;loaded.family=true;applyGuideName();applyTheme();route();rerender()},fail);
   C("members").orderBy("joinedAt").onSnapshot(s=>{members={};s.docs.forEach(d=>members[d.id]=d.data());loaded.members=true;
     if(me&&members[uid]){me={id:uid,...members[uid]};renderAll()}else route()},fail);
   C("messages").orderBy("ts","desc").limit(200).onSnapshot(s=>{messages=s.docs.map(d=>({id:d.id,...d.data()})).reverse();if(me){renderChat();renderBell()}},fail);
