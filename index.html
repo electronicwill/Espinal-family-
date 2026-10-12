@@ -493,6 +493,14 @@ input.field,textarea.field,.inrow textarea{background:rgba(8,12,34,.75);border:1
 .hqty b{min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
 .tabbar button{min-width:0}
 body:has(#sheetRoot .sheet) .nova-fab{display:none}
+.hsnap{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px 16px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,rgba(62,240,255,.16),rgba(165,139,255,.18));box-shadow:inset 0 0 0 1px rgba(62,240,255,.35)}
+.hsnap .ic{font-size:30px}.hsnap b{display:block;font-size:17px}.hsnap .grow span{font-size:14px;color:var(--label-2)}
+.hsnapimg{display:block;width:100%;max-height:260px;object-fit:cover;border-radius:16px;margin-top:4px}
+.hsnaprow{align-items:flex-start}.hsnaprow.off{opacity:.45}
+.hsnapck{flex:none;width:28px;height:28px;border-radius:50%;margin-top:2px;background:var(--fill);color:var(--on-tint);font-weight:800}
+.hsnapck[aria-pressed="true"]{background:var(--tint)}
+.hsnapname{background:transparent!important;padding:0!important;font-size:17px;width:100%}
+.hsnapcal{display:inline-block!important;width:64px!important;background:var(--fill)!important;padding:3px 8px!important;border-radius:8px!important;font-size:14px;text-align:right}
 @media (max-width:380px){.htiles{gap:7px}.htile{padding:10px}.htile b{font-size:22px}.hfood{flex-direction:column}.hbars{width:100%}}
 </style>
 
@@ -2512,7 +2520,11 @@ function openAddFood(id){const h=health[id]||{},gf=(h.cond||[]).includes("gluten
   const hr=new Date().getHours();let meal=hr<10?"b":hr<15?"l":hr<21?"d":"s",qty=1;
   openSheet("Add food",body=>{
     const seg=el("div","seg");MEALT.forEach(m=>{const b=el("button","",m.n);b.setAttribute("aria-pressed",m.v===meal);b.onclick=()=>{meal=m.v;seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))};seg.append(b)});body.append(seg);
-    const q=el("input","field");q.placeholder="Search: rice, eggs, pollo, mangú…";q.setAttribute("aria-label","Search foods");q.style.marginTop="12px";q.autocomplete="off";body.append(q);
+    const snap=el("label","hsnap");snap.hidden=true;const cam=el("input");cam.type="file";cam.accept="image/*";cam.setAttribute("capture","environment");cam.hidden=true;
+    snap.append(el("span","ic","📷"),el("span","grow"),cam);snap.querySelector(".grow").append(el("b","","Snap a meal"),el("span","",GN()+" spots the food and counts it for you"));body.append(snap);
+    (async()=>{const caps=sample&&aiOn&&sample.limits?await sample.limits().catch(()=>null):null;if(caps?.images){snap.hidden=false;if(caps.images.mediaTypes)cam.accept=caps.images.mediaTypes.join(",")}})();
+    cam.onchange=()=>{const f=cam.files&&cam.files[0];cam.value="";if(f)snapMeal(id,meal,f)};
+    const q=el("input","field");q.placeholder="Or search: rice, eggs, pollo, mangú…";q.setAttribute("aria-label","Search foods");q.style.marginTop="12px";q.autocomplete="off";body.append(q);
     const qtyRow=el("div","hqty");const minus=el("button","smallround","−"),plus=el("button","smallround","+"),qv=el("b","","1 serving");minus.setAttribute("aria-label","Less");plus.setAttribute("aria-label","More");
     const setQ=n=>{qty=Math.max(.5,Math.min(10,n));qv.textContent=fmt1(qty)+(qty===1?" serving":" servings")};minus.onclick=()=>setQ(qty-.5);plus.onclick=()=>setQ(qty+.5);qtyRow.append(minus,qv,plus);body.append(qtyRow);
     const list=el("div","list plain");list.style.marginTop="8px";body.append(list);
@@ -2541,7 +2553,48 @@ function openAddFood(id){const h=health[id]||{},gf=(h.cond||[]).includes("gluten
       const c3=el("div","cell"),pr=el("input","field");pr.type="number";pr.inputMode="numeric";pr.placeholder="Protein (optional)";pr.setAttribute("aria-label","Protein grams");c3.append(pr,el("span","s","g"));l.append(c1,c2,c3);
       const ok=el("button","btn","Add");ok.style.marginTop="10px";ok.onclick=()=>{const c=Math.round(+cal.value);if(!nm.value.trim()||!(c>=0&&c<5000)){toast("Type a name and calories.");return}add({n:nm.value.trim().slice(0,60),c,p:Math.round(+pr.value||0)})};
       extra.append(el("div","section-h","Your own food"),l,ok);cal.focus()};
-    q.oninput=draw;draw();setTimeout(()=>q.focus(),50)})}
+    q.oninput=draw;draw()})}
+/* photo → foods: Coco looks at the picture, the person checks it, then it's logged */
+function snapMeal(id,meal,file){const h=health[id]||{},gf=(h.cond||[]).includes("gluten"),who=members[id]||me;
+  openSheet("Snap a meal",body=>{
+    const img=el("img","hsnapimg");img.alt="Your meal photo";try{img.src=URL.createObjectURL(file)}catch(e){}body.append(img);
+    const st=el("div","htip","✨ "+GN()+" is looking at "+(id===uid?"your":who.name+"'s")+" plate…");st.style.marginTop="12px";body.append(st);
+    const out=el("div");body.append(out);
+    const ctl=new AbortController();
+    sample.json(`You are a careful nutrition helper for a Dominican-American family in Florida. The attached photo shows ONE meal that ${who.name} is about to eat or just ate.
+Identify each separate food or drink you can see (Dominican dishes are common: mangú, tostones, maduros, arroz blanco, habichuelas guisadas, pollo guisado, moro, yuca, salami frito, queso frito, sancocho, ensalada). Estimate the portion actually on the plate using the plate, cutlery and hands for scale. Use typical USDA values for that portion.
+If the photo is not food, return {"items":[],"note":"short friendly reason"}.
+Return JSON only:
+{"items":[{"name":"short name with portion, e.g. White rice, 1½ cups","cal":number,"protein_g":number,"veg_cups":number,"fruit_cups":number,"grain_servings":number,"dairy_cups":number,"added_sugar_g":number,"gluten":true|false,"gluten_maybe":true|false,"lactose":true|false,"sure":"high"|"medium"|"low"}],"note":"one short sentence about the meal, kind and encouraging"}
+grain_servings: 1 = 1 slice bread or ½ cup cooked rice. gluten_maybe = could hide gluten (breading, sauces, seasoning cubes, salami).`,{images:[file],modelTier:"default",cache:false,signal:ctl.signal}).then(r=>{
+      const items=Array.isArray(r?.items)?r.items.slice(0,10):[];
+      if(!items.length){st.textContent="🤔 "+(r?.note||"I couldn't find food in that photo. Try again with the whole plate in view.");return}
+      st.textContent="🍽️ "+(r.note||"Here's what I see.")+" Check the list, fix anything, then add it.";
+      const n=x=>Math.max(0,Math.min(4000,+x||0));
+      const rows=items.map(it=>({on:true,f:{n:String(it.name||"Food").slice(0,60),c:Math.round(n(it.cal)),p:Math.round(n(it.protein_g)),v:n(it.veg_cups),f:n(it.fruit_cups),g:n(it.grain_servings),d:n(it.dairy_cups),su:Math.round(n(it.added_sugar_g)),fl:[it.gluten?"gl":"",!it.gluten&&it.gluten_maybe?"chk":"",it.lactose?"lac":""].filter(Boolean)},sure:it.sure}));
+      const l=el("div","list plain");l.style.marginTop="10px";const total=el("div","section-f");
+      const sum=()=>{const on=rows.filter(r=>r.on);total.textContent=on.length+" item"+(on.length===1?"":"s")+" · about "+on.reduce((a,r)=>a+r.f.c,0)+" calories · "+on.reduce((a,r)=>a+r.f.p,0)+" g protein";add.disabled=!on.length;add.textContent="Add to "+MEALT.find(m=>m.v===meal).n};
+      rows.forEach(r=>{const c=el("div","cell hsnaprow"),ck=el("button","hsnapck","✓");ck.setAttribute("aria-pressed","true");ck.setAttribute("aria-label","Include "+r.f.n);
+        ck.onclick=()=>{r.on=!r.on;ck.setAttribute("aria-pressed",r.on);ck.textContent=r.on?"✓":"";c.classList.toggle("off",!r.on);sum()};
+        const g=el("span","grow"),nm=el("input","field hsnapname");nm.value=r.f.n;nm.setAttribute("aria-label","Food name");nm.oninput=()=>{r.f.n=nm.value.slice(0,60)};
+        const meta=el("span","s");const cal=el("input","field hsnapcal");cal.type="number";cal.inputMode="numeric";cal.value=r.f.c;cal.setAttribute("aria-label","Calories for "+r.f.n);
+        cal.oninput=()=>{const old=r.f.c||1,nv=Math.max(0,Math.min(4000,Math.round(+cal.value||0)));const k=nv/old;r.f.c=nv;if(old>0&&nv>0){r.f.p=Math.round(r.f.p*k)}sum()};
+        meta.append(cal,document.createTextNode(" cal · "+r.f.p+" g protein"+(r.sure==="low"?" · not sure":"")));g.append(nm,meta);c.append(ck,g);
+        if(gf&&r.f.fl.includes("gl"))c.append(el("span","hwarn","⚠ gluten"));else if(gf&&r.f.fl.includes("chk"))c.append(el("span","hwarn soft","check"));
+        l.append(c)});
+      const add=el("button","btn","Add");add.style.marginTop="12px";
+      add.onclick=async()=>{add.disabled=true;const on=rows.filter(r=>r.on&&r.f.n.trim());
+        try{for(const r of on)await C("meals").add({by:id,date:hDay||TODAY,meal,n:r.f.n.trim(),c:r.f.c,p:r.f.p,v:r.f.v,f:r.f.f,g:r.f.g,d:r.f.d,su:r.f.su,fl:r.f.fl,qty:1,est:true,photo:true,at:Date.now(),addedBy:uid});
+          closeSheet();chime([784,988,1175]);toast("📷 Added "+on.length+" item"+(on.length===1?"":"s"));if(gf&&on.some(r=>r.f.fl.includes("gl")))setTimeout(()=>toast("⚠ Heads up: that meal may have gluten"),2700)}
+        catch(e){add.disabled=false;toast("Couldn't add it. Try again.")}};
+      out.append(l,total,add);sum();
+      const again=el("label","btn gray","📷 Take another photo");again.style.marginTop="8px";const c2=el("input");c2.type="file";c2.accept="image/*";c2.setAttribute("capture","environment");c2.hidden=true;again.append(c2);
+      c2.onchange=()=>{const f=c2.files&&c2.files[0];if(f)snapMeal(id,meal,f)};out.append(again);
+      out.append(el("p","section-f","Photo estimates can be off by 20% or more. Fix portions that look wrong. The photo isn't saved."));
+    }).catch(e=>{st.textContent=e?.code==="not_granted"?"🔒 "+GN()+" needs permission to look at photos. Allow it when asked, or type the food instead.":e?.code==="cancelled"?"Stopped.":"😕 I couldn't read that photo. Try again in good light, or search for the food instead.";
+      const back=el("button","btn gray","Search instead");back.style.marginTop="10px";back.onclick=()=>openAddFood(id);out.append(back)});
+    body.closest(".sheetbg")?.addEventListener("click",e=>{if(e.target.classList.contains("sheetbg"))ctl.abort()});
+  })}
 async function askCocoPlan(id){const h=health[id],who=members[id]||me,p=planOf(h);if(!p)return;
   openSheet(GN()+"'s meal plan",async body=>{const out=el("div","htip");out.style.whiteSpace="pre-wrap";out.textContent="✨ Thinking about "+(id===uid?"you":who.name)+"…";body.append(out);
     if(!sample||!aiOn){const k=(h.cond||[]).includes("gluten")?"gluten":ageOf(h)<18?"kid":null;out.textContent=k&&COND_TIPS[k].day?"Here's a sample day:\n\n"+MEALT.map(m=>COND_TIPS[k].day[m.v]?m.e+" "+m.n+": "+COND_TIPS[k].day[m.v]:"").filter(Boolean).join("\n"):GN()+" can't think right now. Check the daily plan and tips on the Health page.";return}

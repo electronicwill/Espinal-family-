@@ -82,6 +82,7 @@
       if (typeof m.content === "string") return { role, parts: [{ text: m.content }] };
       return { role, parts: m.content.map(b => {
         if (b.type === "text") return { text: b.text };
+        if (b.type === "image") return { inline_data: { mime_type: b.source.media_type, data: b.source.data } };
         if (b.type === "tool_use") { names[b.id] = b.name; return b.thought_signature ? { functionCall: { name: b.name, args: b.input || {} }, thoughtSignature: b.thought_signature } : { functionCall: { name: b.name, args: b.input || {} } }; }
         if (b.type === "tool_result") return { functionResponse: { name: names[b.tool_use_id] || "tool", response: { result: b.content } } };
         return { text: "" };
@@ -119,9 +120,25 @@
     const out = []; list.forEach(m => { const last = out[out.length - 1]; if (last && last.role === m.role && typeof last.content === "string") last.content += "\n\n" + m.content; else out.push({ ...m }); });
     return out;
   };
+  async function imageBlock(blob) {
+    if (!blob || !/^image\//.test(blob.type || "image/")) throw { code: "image_rejected", message: "Not an image" };
+    let bmp; try { bmp = await createImageBitmap(blob); } catch (e) { throw { code: "image_rejected", message: "Couldn't read the photo" }; }
+    const k = Math.min(1, Math.sqrt(1200000 / (bmp.width * bmp.height))), cv = document.createElement("canvas");
+    cv.width = Math.max(1, Math.round(bmp.width * k)); cv.height = Math.max(1, Math.round(bmp.height * k));
+    cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height);
+    const data = cv.toDataURL("image/jpeg", 0.85).split(",")[1];
+    return { type: "image", source: { type: "base64", media_type: "image/jpeg", data } };
+  }
   async function sample(input, opts) {
     opts = opts || {};
-    const msgs = toMessages(input), defs = (opts.tools || []).map(t => ({ name: t.name, description: t.description, input_schema: t.inputSchema || { type: "object", properties: {} } }));
+    const msgs = toMessages(input);
+    if (opts.images) {
+      const list = (opts.images instanceof Blob ? [opts.images] : Array.from(opts.images)).slice(0, 4);
+      const blocks = []; for (const b of list) blocks.push(await imageBlock(b));
+      const last = msgs[msgs.length - 1];
+      last.content = [...blocks, { type: "text", text: String(last.content) }];
+    }
+    const defs = (opts.tools || []).map(t => ({ name: t.name, description: t.description, input_schema: t.inputSchema || { type: "object", properties: {} } }));
     let all = "";
     for (let round = 0; round < 6; round++) {
       let res;
@@ -156,7 +173,7 @@
     if (v === undefined) throw { code: "invalid_json", message: "no JSON", text };
     return v;
   };
-  sample.limits = async () => ({ maxPromptBytes: 262144, tools: { maxCount: 16 } });
+  sample.limits = async () => ({ maxPromptBytes: 262144, tools: { maxCount: 16 }, images: { maxCount: 4, maxBytes: 20971520, mediaTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"] } });
   window.claude = { use: async name => name === "db" ? db : name === "sample" ? sample : null };
 
   /* ---------- "Coco's brain" card in the Family tab (parents add the key once) ---------- */
